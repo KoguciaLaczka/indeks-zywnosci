@@ -1,1 +1,416 @@
+name: 00 - Instalacja projektu
 
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pobranie repozytorium
+        uses: actions/checkout@v4
+
+      - name: Sprawdzenie klucza USDA
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          key = os.environ.get("USDA_API_KEY", "").strip()
+
+          if not key:
+              raise SystemExit(
+                  "BŁĄD: Nie znaleziono sekretu USDA_API_KEY."
+              )
+
+          url = (
+              "https://api.nal.usda.gov/fdc/v1/foods/search"
+              "?api_key=" + key
+          )
+
+          payload = json.dumps({
+              "query": "beef liver raw",
+              "pageSize": 1,
+              "dataType": ["Foundation", "SR Legacy"]
+          }).encode("utf-8")
+
+          request = urllib.request.Request(
+              url,
+              data=payload,
+              headers={"Content-Type": "application/json"},
+              method="POST"
+          )
+
+          with urllib.request.urlopen(request, timeout=30) as response:
+              result = json.loads(response.read().decode("utf-8"))
+
+          foods = result.get("foods", [])
+
+          if not foods:
+              raise SystemExit(
+                  "BŁĄD: USDA odpowiedziało, ale nie zwróciło produktu."
+              )
+
+          food = foods[0]
+
+          print("USDA API: OK")
+          print("Przykładowy FDC ID:", food.get("fdcId"))
+          print("Przykładowy produkt:", food.get("description"))
+          PY
+
+      - name: Utworzenie struktury projektu
+        run: |
+          mkdir -p config
+          mkdir -p data/catalog
+          mkdir -p data/raw
+          mkdir -p data/normalized
+          mkdir -p data/prices
+          mkdir -p data/snapshots
+          mkdir -p artifacts
+          mkdir -p src
+          mkdir -p tests
+          mkdir -p public
+          mkdir -p .github/workflows
+
+          touch data/raw/.gitkeep
+          touch data/normalized/.gitkeep
+          touch data/prices/.gitkeep
+          touch data/snapshots/.gitkeep
+          touch artifacts/.gitkeep
+
+          cat > requirements.txt <<'EOF'
+          duckdb>=1.1,<2
+          pandas>=2.2,<3
+          PyYAML>=6,<7
+          requests>=2.32,<3
+          Jinja2>=3.1,<4
+          pytest>=8,<9
+          EOF
+
+          cat > config/project.yaml <<'EOF'
+          project:
+            name: "Indeks żywności Kogucia Łączka"
+            version: "2.0.0-dev"
+            language: "pl"
+            status: "development"
+
+          sources:
+            usda:
+              enabled: true
+              preferred_types:
+                - "Foundation"
+                - "SR Legacy"
+                - "FNDDS"
+              branded_foods_enabled: false
+
+          publication:
+            public_directory: "public"
+            publish_incomplete_results: false
+            show_component_scores: true
+            show_sources: true
+            show_methodology_version: true
+
+          safety:
+            fail_on_missing_source: true
+            fail_on_unknown_unit: true
+            fail_on_duplicate_product_id: true
+            fail_on_negative_nutrient_value: true
+            preserve_last_valid_publication: true
+          EOF
+
+          cat > config/methodology.yaml <<'EOF'
+          methodology:
+            version: "2.0.0-dev"
+            status: "draft"
+            description: >
+              Otwarty i audytowalny indeks gęstości odżywczej
+              oraz ekonomicznej żywności.
+
+          scoring:
+            per_100g_weight: 0.60
+            per_100kcal_weight: 0.40
+            nutrient_cap: 120
+            full_completeness_minimum: 0.80
+            conditional_completeness_minimum: 0.60
+
+          rules:
+            missing_value_is_zero: false
+            distinguish_measured_calculated_imputed: true
+            separate_nutrition_from_price: true
+            separate_production_system_layer: true
+            separate_bioavailability_layer: true
+            expose_component_scores: true
+
+          group_weights:
+            minerals: 0.30
+            vitamins: 0.30
+            protein_and_amino_acids: 0.20
+            fatty_acids: 0.10
+            fiber_and_functional: 0.10
+
+          disclaimer:
+            pl: >
+              Indeks służy edukacji i porównywaniu żywności.
+              Nie stanowi diagnozy ani indywidualnego zalecenia medycznego.
+          EOF
+
+          cat > data/catalog/products.csv <<'EOF'
+          product_id,name_pl,fdc_id,category,state,status
+          EOF
+
+          cat > src/__init__.py <<'EOF'
+          """Silnik Indeksu Żywności Kogucia Łączka."""
+          EOF
+
+          cat > src/settings.py <<'EOF'
+          from pathlib import Path
+          import yaml
+
+          ROOT = Path(__file__).resolve().parents[1]
+          CONFIG_DIR = ROOT / "config"
+          DATA_DIR = ROOT / "data"
+          PUBLIC_DIR = ROOT / "public"
+          ARTIFACTS_DIR = ROOT / "artifacts"
+
+
+          def load_yaml(name: str) -> dict:
+              path = CONFIG_DIR / name
+
+              with path.open("r", encoding="utf-8") as handle:
+                  return yaml.safe_load(handle)
+
+
+          def load_project_config() -> dict:
+              return load_yaml("project.yaml")
+
+
+          def load_methodology() -> dict:
+              return load_yaml("methodology.yaml")
+          EOF
+
+          cat > src/validate_config.py <<'EOF'
+          from decimal import Decimal
+          from src.settings import load_methodology, load_project_config
+
+
+          def validate() -> dict:
+              project = load_project_config()
+              methodology = load_methodology()
+
+              scoring = methodology["scoring"]
+              groups = methodology["group_weights"]
+
+              mass_weight = Decimal(str(scoring["per_100g_weight"]))
+              energy_weight = Decimal(str(scoring["per_100kcal_weight"]))
+
+              if mass_weight + energy_weight != Decimal("1.0"):
+                  raise ValueError(
+                      "Wagi 100 g i 100 kcal nie sumują się do 1."
+                  )
+
+              group_sum = sum(
+                  Decimal(str(value))
+                  for value in groups.values()
+              )
+
+              if group_sum != Decimal("1.0"):
+                  raise ValueError(
+                      "Wagi grup składników nie sumują się do 1."
+                  )
+
+              full = Decimal(
+                  str(scoring["full_completeness_minimum"])
+              )
+              conditional = Decimal(
+                  str(scoring["conditional_completeness_minimum"])
+              )
+
+              if not Decimal("0") < conditional < full <= Decimal("1"):
+                  raise ValueError(
+                      "Nieprawidłowe progi kompletności."
+                  )
+
+              if project["publication"]["publish_incomplete_results"]:
+                  raise ValueError(
+                      "Publikowanie niepełnych wyników musi być wyłączone."
+                  )
+
+              return {
+                  "project": project["project"]["name"],
+                  "methodology_version":
+                      methodology["methodology"]["version"],
+                  "status": "OK"
+              }
+
+
+          if __name__ == "__main__":
+              print(validate())
+          EOF
+
+          cat > tests/test_configuration.py <<'EOF'
+          from src.validate_config import validate
+
+
+          def test_configuration_is_valid():
+              result = validate()
+              assert result["status"] == "OK"
+              assert result["methodology_version"] == "2.0.0-dev"
+          EOF
+
+          cat > public/index.html <<'EOF'
+          <!doctype html>
+          <html lang="pl">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Indeks żywności — Kogucia Łączka</title>
+            <style>
+              body {
+                max-width: 900px;
+                margin: 50px auto;
+                padding: 20px;
+                font-family: system-ui, sans-serif;
+                line-height: 1.6;
+                color: #20251f;
+                background: #f7f8f4;
+              }
+              main {
+                background: white;
+                padding: 32px;
+                border-radius: 14px;
+                box-shadow: 0 4px 20px #00000012;
+              }
+              h1 { color: #274e13; }
+              .status {
+                display: inline-block;
+                padding: 6px 12px;
+                border-radius: 999px;
+                background: #fff2cc;
+                font-weight: 700;
+              }
+            </style>
+          </head>
+          <body>
+            <main>
+              <p class="status">Wersja rozwojowa 2.0</p>
+              <h1>Indeks żywności Kogucia Łączka</h1>
+              <p>
+                Trwa budowa automatycznego, audytowalnego indeksu
+                gęstości odżywczej i ekonomicznej żywności.
+              </p>
+              <p>
+                Wyniki nie są jeszcze publikowane. Najpierw silnik
+                musi przejść kontrolę metodologii i testy referencyjne.
+              </p>
+            </main>
+          </body>
+          </html>
+          EOF
+
+          cat > .github/workflows/01-validate.yml <<'EOF'
+          name: 01 - Walidacja projektu
+
+          on:
+            push:
+              branches: [main]
+            pull_request:
+              branches: [main]
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+
+              steps:
+                - name: Pobranie repozytorium
+                  uses: actions/checkout@v4
+
+                - name: Python
+                  uses: actions/setup-python@v5
+                  with:
+                    python-version: "3.12"
+                    cache: "pip"
+
+                - name: Instalacja zależności
+                  run: pip install -r requirements.txt
+
+                - name: Kontrola konfiguracji
+                  run: python -m src.validate_config
+
+                - name: Testy
+                  run: pytest -q
+          EOF
+
+          cat > README.md <<'EOF'
+          # Indeks żywności — Kogucia Łączka
+
+          Otwarty, audytowalny indeks gęstości odżywczej
+          i ekonomicznej żywności.
+
+          ## Status
+
+          Projekt jest obecnie w fazie budowy silnika 2.0.
+
+          Wyniki nie są jeszcze publikowane jako ostateczne.
+
+          ## Zasady
+
+          - jawna metodologia,
+          - pełny rozkład punktów,
+          - rozróżnienie zera i braku danych,
+          - oddzielenie wartości odżywczej od ceny,
+          - źródło każdej wartości,
+          - automatyczne testy przed publikacją,
+          - brak publikowania niepełnych danych jako pełnych wyników.
+
+          ## Źródła
+
+          Podstawowym źródłem danych odżywczych jest
+          USDA FoodData Central.
+
+          ## Odpowiedzialność
+
+          Indeks ma charakter edukacyjny i analityczny.
+          Nie stanowi diagnozy ani indywidualnego zalecenia medycznego.
+          EOF
+
+      - name: Kontrola konfiguracji
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m src.validate_config
+          pytest -q
+
+      - name: Zapisanie struktury w repozytorium
+        run: |
+          git config user.name "Indeks Żywności Bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "Struktura projektu jest już aktualna."
+          else
+            git commit -m "Utworzenie fundamentu silnika 2.0"
+            git push
+          fi
+
+      - name: Podsumowanie
+        run: |
+          echo "=========================================="
+          echo "INSTALACJA ZAKOŃCZONA"
+          echo "USDA API: OK"
+          echo "KONFIGURACJA: OK"
+          echo "TESTY: OK"
+          echo "SILNIK 2.0: FUNDAMENT UTWORZONY"
+          echo "=========================================="
