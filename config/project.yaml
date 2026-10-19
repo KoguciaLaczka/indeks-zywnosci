@@ -1,0 +1,28 @@
+project:
+  name: "Indeks żywności Kogucia Łączka"
+  version: "2.0.0-dev"
+  language: "pl"
+  status: "development"
+
+sources:
+  usda:
+    enabled: true
+    preferred_types:
+      - "Foundation"
+      - "SR Legacy"
+      - "FNDDS"
+    branded_foods_enabled: false
+
+publication:
+  public_directory: "public"
+  publish_incomplete_results: false
+  show_component_scores: true
+  show_sources: true
+  show_methodology_version: true
+
+safety:
+  fail_on_missing_source: true
+  fail_on_unknown_unit: true
+  fail_on_duplicate_product_id: true
+  fail_on_negative_nutrient_value: true
+  preserve_last_valid_publication: true
