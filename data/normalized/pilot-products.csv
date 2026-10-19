@@ -1,0 +1,4 @@
+﻿product_id,name_pl,fdc_id,fdc_description,data_type,category,state,energy_kcal_100g,energy_source,available_components,all_components,completeness,amino_acid_score,limiting_amino_acid
+BEEF-LIVER-RAW,Wątroba wołowa surowa,169451,"Beef, variety meats and by-products, liver, raw",SR Legacy,Podroby,Surowy,135.0,USDA direct,27,27,1.0,158.316961362148,isoleucine
+BEEF-HEART-RAW,Serce wołowe surowe,168625,"Beef, variety meats and by-products, heart, raw",SR Legacy,Podroby,Surowy,112.0,USDA direct,24,27,0.8888888888888888,,
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,2514743,"Beef, ground, 90% lean meat / 10% fat, raw",Foundation,Mięso czerwone,Surowy,184.8648,USDA direct,9,27,0.3333333333333333,,

@@ -1,0 +1,47 @@
+[
+  {
+    "product_id": "BEEF-LIVER-RAW",
+    "name_pl": "Wątroba wołowa surowa",
+    "category": "Podroby",
+    "energy_kcal_100g": 135.0,
+    "available_components": 27,
+    "all_components": 27,
+    "completeness": 1.0,
+    "completeness_percent": 100.0,
+    "score_raw": 46.43767874440374,
+    "score_cautious": 46.43767874440374,
+    "status": "Pełny profil pilotażowy",
+    "methodology_version": "2.0.0-pilot",
+    "place": 1
+  },
+  {
+    "product_id": "BEEF-HEART-RAW",
+    "name_pl": "Serce wołowe surowe",
+    "category": "Podroby",
+    "energy_kcal_100g": 112.0,
+    "available_components": 24,
+    "all_components": 27,
+    "completeness": 0.8888888888888888,
+    "completeness_percent": 88.88888888888889,
+    "score_raw": 20.945285951818743,
+    "score_cautious": 18.618031957172214,
+    "status": "Pełny profil pilotażowy",
+    "methodology_version": "2.0.0-pilot",
+    "place": 2
+  },
+  {
+    "product_id": "BEEF-GROUND-9010-RAW",
+    "name_pl": "Wołowina mielona 90/10 surowa",
+    "category": "Mięso czerwone",
+    "energy_kcal_100g": 184.8648,
+    "available_components": 9,
+    "all_components": 27,
+    "completeness": 0.3333333333333333,
+    "completeness_percent": 33.33333333333333,
+    "score_raw": 9.090065013586957,
+    "score_cautious": 3.030021671195652,
+    "status": "Profil eksperymentalny",
+    "methodology_version": "2.0.0-pilot",
+    "place": 3
+  }
+]

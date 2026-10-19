@@ -1,0 +1,4 @@
+﻿place,product_id,name_pl,category,energy_kcal_100g,available_components,all_components,completeness_percent,score_raw,score_cautious,status,methodology_version
+1,BEEF-LIVER-RAW,Wątroba wołowa surowa,Podroby,135.0,27,27,100.0,46.43767874440374,46.43767874440374,Pełny profil pilotażowy,2.0.0-pilot
+2,BEEF-HEART-RAW,Serce wołowe surowe,Podroby,112.0,24,27,88.88888888888889,20.945285951818743,18.618031957172214,Pełny profil pilotażowy,2.0.0-pilot
+3,BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,Mięso czerwone,184.8648,9,27,33.33333333333333,9.090065013586957,3.030021671195652,Profil eksperymentalny,2.0.0-pilot

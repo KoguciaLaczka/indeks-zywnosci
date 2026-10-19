@@ -1,0 +1,82 @@
+﻿product_id,name_pl,nutrient_key,nutrient_name,group,value,unit,reference,reference_source,points_100g,points_100kcal,weighted_score,data_status,source
+BEEF-LIVER-RAW,Wątroba wołowa surowa,protein,Białko,protein_and_amino_acids,20.36,g,50.0,UE RI,40.72,30.162962962962965,36.49718518518519,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_a_rae,Witamina A (RAE),vitamins,4968.0,ug,800.0,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_c,Witamina C,vitamins,1.3,mg,80.0,UE NRV,1.625,1.2037037037037037,1.4564814814814815,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_d,Witamina D,vitamins,1.2,ug,5.0,UE NRV,24.0,17.777777777777775,21.51111111111111,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_e,Witamina E,vitamins,0.38,mg,12.0,UE NRV,3.166666666666667,2.3456790123456788,2.8382716049382717,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_k,Witamina K,vitamins,3.1,ug,75.0,UE NRV,4.133333333333333,3.0617283950617287,3.704691358024691,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,thiamin,Tiamina B1,vitamins,0.189,mg,1.1,UE NRV,17.18181818181818,12.727272727272727,15.399999999999999,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,riboflavin,Ryboflawina B2,vitamins,2.755,mg,1.4,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,niacin,Niacyna B3,vitamins,13.175,mg,16.0,UE NRV,82.34375,60.995370370370374,73.80439814814815,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,pantothenic_acid,Kwas pantotenowy B5,vitamins,7.173,mg,6.0,UE NRV,119.55,88.55555555555556,107.1522222222222,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_b6,Witamina B6,vitamins,1.083,mg,1.4,UE NRV,77.35714285714286,57.3015873015873,69.33492063492064,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,folate,Foliany,vitamins,290.0,ug,200.0,UE NRV,120.0,107.40740740740742,114.96296296296296,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_b12,Witamina B12,vitamins,59.3,ug,2.5,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,choline,Cholina,vitamins,333.3,mg,400.0,EFSA AI — warstwa dodatkowa,83.325,61.72222222222222,74.68388888888889,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,calcium,Wapń,minerals,5.0,mg,800.0,UE NRV,0.625,0.4629629629629629,0.5601851851851851,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,iron,Żelazo,minerals,4.9,mg,14.0,UE NRV,35.0,25.925925925925924,31.37037037037037,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,magnesium,Magnez,minerals,18.0,mg,375.0,UE NRV,4.8,3.5555555555555554,4.302222222222222,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,phosphorus,Fosfor,minerals,387.0,mg,700.0,UE NRV,55.285714285714285,40.952380952380956,49.55238095238096,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,potassium,Potas,minerals,313.0,mg,2000.0,UE NRV,15.65,11.592592592592592,14.027037037037037,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,zinc,Cynk,minerals,4.0,mg,10.0,UE NRV,40.0,29.629629629629633,35.851851851851855,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,copper,Miedź,minerals,9.755,mg,1.0,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,manganese,Mangan,minerals,0.31,mg,2.0,UE NRV,15.5,11.481481481481481,13.892592592592592,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,selenium,Selen,minerals,39.7,ug,55.0,UE NRV,72.18181818181819,53.46801346801347,64.6962962962963,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,fiber,Błonnik,fiber_and_functional,0.0,g,25.0,wartość referencyjna pilota,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,ala,ALA omega-3,fatty_acids,0.007,g,2.0,wartość referencyjna pilota,0.35000000000000003,0.25925925925925924,0.3137037037037037,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,linoleic_acid,LA omega-6,fatty_acids,0.299,g,10.0,wartość referencyjna pilota,2.9899999999999998,2.214814814814815,2.679925925925926,USDA — wartość bezpośrednia,USDA FDC
+BEEF-LIVER-RAW,Wątroba wołowa surowa,amino_acid_score,Amino Acid Score,protein_and_amino_acids,158.316961362148,pkt,100.0,FAO adult pattern,120.0,120.0,120.0,Obliczono; to nie DIAAS,USDA FDC / FAO
+BEEF-HEART-RAW,Serce wołowe surowe,protein,Białko,protein_and_amino_acids,17.72,g,50.0,UE RI,35.44,31.64285714285714,33.921142857142854,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_a_rae,Witamina A (RAE),vitamins,0.0,ug,800.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_c,Witamina C,vitamins,2.0,mg,80.0,UE NRV,2.5,2.2321428571428568,2.392857142857143,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_d,Witamina D,vitamins,,ug,5.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_e,Witamina E,vitamins,0.22,mg,12.0,UE NRV,1.8333333333333333,1.636904761904762,1.7547619047619047,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_k,Witamina K,vitamins,0.0,ug,75.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,thiamin,Tiamina B1,vitamins,0.238,mg,1.1,UE NRV,21.636363636363633,19.318181818181817,20.709090909090904,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,riboflavin,Ryboflawina B2,vitamins,0.906,mg,1.4,UE NRV,64.71428571428572,57.78061224489795,61.94081632653061,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,niacin,Niacyna B3,vitamins,7.53,mg,16.0,UE NRV,47.0625,42.02008928571429,45.04553571428572,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,pantothenic_acid,Kwas pantotenowy B5,vitamins,1.79,mg,6.0,UE NRV,29.833333333333336,26.636904761904763,28.554761904761907,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_b6,Witamina B6,vitamins,0.279,mg,1.4,UE NRV,19.92857142857143,17.79336734693878,19.074489795918367,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,folate,Foliany,vitamins,3.0,ug,200.0,UE NRV,1.5,1.3392857142857142,1.4357142857142855,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_b12,Witamina B12,vitamins,8.55,ug,2.5,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,choline,Cholina,vitamins,,mg,400.0,EFSA AI — warstwa dodatkowa,,,,Brak danych — nie zero,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,calcium,Wapń,minerals,7.0,mg,800.0,UE NRV,0.8750000000000001,0.78125,0.8375,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,iron,Żelazo,minerals,4.31,mg,14.0,UE NRV,30.785714285714285,27.487244897959183,29.466326530612246,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,magnesium,Magnez,minerals,21.0,mg,375.0,UE NRV,5.6000000000000005,5.0,5.36,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,phosphorus,Fosfor,minerals,212.0,mg,700.0,UE NRV,30.28571428571429,27.04081632653061,28.987755102040815,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,potassium,Potas,minerals,287.0,mg,2000.0,UE NRV,14.35,12.812499999999998,13.735,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,zinc,Cynk,minerals,1.7,mg,10.0,UE NRV,17.0,15.178571428571427,16.271428571428572,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,copper,Miedź,minerals,0.396,mg,1.0,UE NRV,39.6,35.35714285714286,37.902857142857144,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,manganese,Mangan,minerals,0.035,mg,2.0,UE NRV,1.7500000000000002,1.5625,1.675,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,selenium,Selen,minerals,21.8,ug,55.0,UE NRV,39.63636363636363,35.3896103896104,37.93766233766234,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,fiber,Błonnik,fiber_and_functional,0.0,g,25.0,wartość referencyjna pilota,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,ala,ALA omega-3,fatty_acids,0.011,g,2.0,wartość referencyjna pilota,0.5499999999999999,0.49107142857142855,0.5264285714285714,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,linoleic_acid,LA omega-6,fatty_acids,0.395,g,10.0,wartość referencyjna pilota,3.95,3.5267857142857144,3.7807142857142857,USDA — wartość bezpośrednia,USDA FDC
+BEEF-HEART-RAW,Serce wołowe surowe,amino_acid_score,Amino Acid Score,protein_and_amino_acids,,pkt,100.0,FAO adult pattern,,,,Brak pełnego profilu aminokwasów,USDA FDC / FAO
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,protein,Białko,protein_and_amino_acids,18.15625,g,50.0,UE RI,36.3125,19.642733500374327,29.64459340014973,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_a_rae,Witamina A (RAE),vitamins,,ug,800.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_c,Witamina C,vitamins,,mg,80.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_d,Witamina D,vitamins,,ug,5.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_e,Witamina E,vitamins,,mg,12.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_k,Witamina K,vitamins,,ug,75.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,thiamin,Tiamina B1,vitamins,,mg,1.1,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,riboflavin,Ryboflawina B2,vitamins,,mg,1.4,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,niacin,Niacyna B3,vitamins,,mg,16.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,pantothenic_acid,Kwas pantotenowy B5,vitamins,,mg,6.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_b6,Witamina B6,vitamins,,mg,1.4,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,folate,Foliany,vitamins,,ug,200.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_b12,Witamina B12,vitamins,,ug,2.5,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,choline,Cholina,vitamins,,mg,400.0,EFSA AI — warstwa dodatkowa,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,calcium,Wapń,minerals,7.135,mg,800.0,UE NRV,0.891875,0.4824471722036861,0.7281038688814744,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,iron,Żelazo,minerals,2.128,mg,14.0,UE NRV,15.2,8.222225107213488,12.408890042885394,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,magnesium,Magnez,minerals,16.49,mg,375.0,UE NRV,4.397333333333333,2.378675298560533,3.589870119424213,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,phosphorus,Fosfor,minerals,148.0,mg,700.0,UE NRV,21.142857142857142,11.436929660409739,17.26048614987818,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,potassium,Potas,minerals,281.4,mg,2000.0,UE NRV,14.069999999999999,7.6109675827956424,11.486387033118255,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,zinc,Cynk,minerals,4.194,mg,10.0,UE NRV,41.94,22.68685006556143,34.23874002622457,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,copper,Miedź,minerals,0.05616,mg,1.0,UE NRV,5.6160000000000005,3.037895802770457,4.584758321108183,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,manganese,Mangan,minerals,0.0,mg,2.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,selenium,Selen,minerals,,ug,55.0,UE NRV,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,fiber,Błonnik,fiber_and_functional,,g,25.0,wartość referencyjna pilota,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,ala,ALA omega-3,fatty_acids,,g,2.0,wartość referencyjna pilota,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,linoleic_acid,LA omega-6,fatty_acids,,g,10.0,wartość referencyjna pilota,,,,Brak danych — nie zero,USDA FDC
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,amino_acid_score,Amino Acid Score,protein_and_amino_acids,,pkt,100.0,FAO adult pattern,,,,Brak pełnego profilu aminokwasów,USDA FDC / FAO

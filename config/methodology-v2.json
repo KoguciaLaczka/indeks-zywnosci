@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0-pilot",
+  "status": "pilot",
+  "weights": {
+    "per_100g": 0.60,
+    "per_100kcal": 0.40
+  },
+  "group_weights": {
+    "minerals": 0.30,
+    "vitamins": 0.30,
+    "protein_and_amino_acids": 0.20,
+    "fatty_acids": 0.10,
+    "fiber_and_functional": 0.10
+  },
+  "nutrient_cap": 120.0,
+  "completeness": {
+    "full": 0.80,
+    "conditional": 0.60
+  },
+  "rules": {
+    "missing_is_zero": false,
+    "zero_is_measured_or_declared_zero": true,
+    "publish_component_scores": true,
+    "publish_sources": true,
+    "separate_price_layer": true,
+    "separate_bioavailability_layer": true,
+    "separate_production_system_layer": true
+  },
+  "disclaimer": "Indeks pilotażowy do celów edukacyjnych i analitycznych. Nie stanowi diagnozy ani indywidualnego zalecenia medycznego."
+}
