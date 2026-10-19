@@ -8,11 +8,22 @@ permissions:
 
 jobs:
   bootstrap:
-    runs-on: ubuntu-latest
+    name: Instalacja fundamentu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
 
     steps:
       - name: Pobranie repozytorium
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Przygotowanie Pythona
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
 
       - name: Sprawdzenie klucza USDA
         env:
@@ -21,6 +32,7 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import urllib.error
           import urllib.request
 
           key = os.environ.get("USDA_API_KEY", "").strip()
@@ -35,21 +47,48 @@ jobs:
               "?api_key=" + key
           )
 
-          payload = json.dumps({
-              "query": "beef liver raw",
-              "pageSize": 1,
-              "dataType": ["Foundation", "SR Legacy"]
-          }).encode("utf-8")
+          payload = json.dumps(
+              {
+                  "query": "beef liver raw",
+                  "pageSize": 1,
+                  "dataType": [
+                      "Foundation",
+                      "SR Legacy"
+                  ]
+              }
+          ).encode("utf-8")
 
           request = urllib.request.Request(
               url,
               data=payload,
-              headers={"Content-Type": "application/json"},
+              headers={
+                  "Content-Type": "application/json",
+                  "User-Agent": "KoguciaLaczka-IndeksZywnosci/2.0"
+              },
               method="POST"
           )
 
-          with urllib.request.urlopen(request, timeout=30) as response:
-              result = json.loads(response.read().decode("utf-8"))
+          try:
+              with urllib.request.urlopen(
+                  request,
+                  timeout=30
+              ) as response:
+                  result = json.loads(
+                      response.read().decode("utf-8")
+                  )
+
+          except urllib.error.HTTPError as error:
+              raise SystemExit(
+                  "BŁĄD USDA HTTP: "
+                  + str(error.code)
+                  + ". Sprawdź sekret USDA_API_KEY."
+              )
+
+          except urllib.error.URLError as error:
+              raise SystemExit(
+                  "BŁĄD POŁĄCZENIA USDA: "
+                  + str(error.reason)
+              )
 
           foods = result.get("foods", [])
 
@@ -65,7 +104,7 @@ jobs:
           print("Przykładowy produkt:", food.get("description"))
           PY
 
-      - name: Utworzenie struktury projektu
+      - name: Utworzenie struktury katalogów
         run: |
           mkdir -p config
           mkdir -p data/catalog
@@ -77,7 +116,6 @@ jobs:
           mkdir -p src
           mkdir -p tests
           mkdir -p public
-          mkdir -p .github/workflows
 
           touch data/raw/.gitkeep
           touch data/normalized/.gitkeep
@@ -85,6 +123,8 @@ jobs:
           touch data/snapshots/.gitkeep
           touch artifacts/.gitkeep
 
+      - name: Utworzenie zależności
+        run: |
           cat > requirements.txt <<'EOF'
           duckdb>=1.1,<2
           pandas>=2.2,<3
@@ -94,6 +134,15 @@ jobs:
           pytest>=8,<9
           EOF
 
+          cat > pytest.ini <<'EOF'
+          [pytest]
+          pythonpath = .
+          testpaths = tests
+          addopts = -ra
+          EOF
+
+      - name: Utworzenie konfiguracji projektu
+        run: |
           cat > config/project.yaml <<'EOF'
           project:
             name: "Indeks żywności Kogucia Łączka"
@@ -158,20 +207,29 @@ jobs:
           disclaimer:
             pl: >
               Indeks służy edukacji i porównywaniu żywności.
-              Nie stanowi diagnozy ani indywidualnego zalecenia medycznego.
+              Nie stanowi diagnozy ani indywidualnego
+              zalecenia medycznego.
           EOF
 
+      - name: Utworzenie katalogu produktów
+        run: |
           cat > data/catalog/products.csv <<'EOF'
           product_id,name_pl,fdc_id,category,state,status
           EOF
 
+      - name: Utworzenie modułu ustawień
+        run: |
           cat > src/__init__.py <<'EOF'
-          """Silnik Indeksu Żywności Kogucia Łączka."""
+          """
+          Silnik Indeksu Żywności Kogucia Łączka.
+          """
           EOF
 
           cat > src/settings.py <<'EOF'
           from pathlib import Path
+
           import yaml
+
 
           ROOT = Path(__file__).resolve().parents[1]
           CONFIG_DIR = ROOT / "config"
@@ -183,8 +241,23 @@ jobs:
           def load_yaml(name: str) -> dict:
               path = CONFIG_DIR / name
 
-              with path.open("r", encoding="utf-8") as handle:
-                  return yaml.safe_load(handle)
+              if not path.exists():
+                  raise FileNotFoundError(
+                      f"Nie znaleziono konfiguracji: {path}"
+                  )
+
+              with path.open(
+                  "r",
+                  encoding="utf-8"
+              ) as handle:
+                  result = yaml.safe_load(handle)
+
+              if not isinstance(result, dict):
+                  raise ValueError(
+                      f"Konfiguracja {name} nie jest słownikiem."
+                  )
+
+              return result
 
 
           def load_project_config() -> dict:
@@ -195,9 +268,15 @@ jobs:
               return load_yaml("methodology.yaml")
           EOF
 
+      - name: Utworzenie walidatora konfiguracji
+        run: |
           cat > src/validate_config.py <<'EOF'
           from decimal import Decimal
-          from src.settings import load_methodology, load_project_config
+
+          from src.settings import (
+              load_methodology,
+              load_project_config,
+          )
 
 
           def validate() -> dict:
@@ -207,46 +286,95 @@ jobs:
               scoring = methodology["scoring"]
               groups = methodology["group_weights"]
 
-              mass_weight = Decimal(str(scoring["per_100g_weight"]))
-              energy_weight = Decimal(str(scoring["per_100kcal_weight"]))
+              mass_weight = Decimal(
+                  str(scoring["per_100g_weight"])
+              )
 
-              if mass_weight + energy_weight != Decimal("1.0"):
+              energy_weight = Decimal(
+                  str(scoring["per_100kcal_weight"])
+              )
+
+              if (
+                  mass_weight + energy_weight
+                  != Decimal("1.0")
+              ):
                   raise ValueError(
-                      "Wagi 100 g i 100 kcal nie sumują się do 1."
+                      "Wagi 100 g i 100 kcal "
+                      "nie sumują się do 1."
                   )
 
               group_sum = sum(
-                  Decimal(str(value))
-                  for value in groups.values()
+                  (
+                      Decimal(str(value))
+                      for value in groups.values()
+                  ),
+                  Decimal("0")
               )
 
               if group_sum != Decimal("1.0"):
                   raise ValueError(
-                      "Wagi grup składników nie sumują się do 1."
+                      "Wagi grup składników "
+                      "nie sumują się do 1."
                   )
 
               full = Decimal(
-                  str(scoring["full_completeness_minimum"])
-              )
-              conditional = Decimal(
-                  str(scoring["conditional_completeness_minimum"])
+                  str(
+                      scoring[
+                          "full_completeness_minimum"
+                      ]
+                  )
               )
 
-              if not Decimal("0") < conditional < full <= Decimal("1"):
+              conditional = Decimal(
+                  str(
+                      scoring[
+                          "conditional_completeness_minimum"
+                      ]
+                  )
+              )
+
+              if not (
+                  Decimal("0")
+                  < conditional
+                  < full
+                  <= Decimal("1")
+              ):
                   raise ValueError(
                       "Nieprawidłowe progi kompletności."
                   )
 
-              if project["publication"]["publish_incomplete_results"]:
+              publication = project["publication"]
+
+              if publication[
+                  "publish_incomplete_results"
+              ]:
                   raise ValueError(
-                      "Publikowanie niepełnych wyników musi być wyłączone."
+                      "Publikowanie niepełnych wyników "
+                      "musi być wyłączone."
+                  )
+
+              if not publication[
+                  "show_component_scores"
+              ]:
+                  raise ValueError(
+                      "Punkty cząstkowe muszą być jawne."
+                  )
+
+              if not publication["show_sources"]:
+                  raise ValueError(
+                      "Źródła muszą być jawne."
                   )
 
               return {
-                  "project": project["project"]["name"],
+                  "project":
+                      project["project"]["name"],
+                  "project_version":
+                      project["project"]["version"],
                   "methodology_version":
-                      methodology["methodology"]["version"],
-                  "status": "OK"
+                      methodology[
+                          "methodology"
+                      ]["version"],
+                  "status": "OK",
               }
 
 
@@ -254,112 +382,199 @@ jobs:
               print(validate())
           EOF
 
+      - name: Utworzenie testów
+        run: |
           cat > tests/test_configuration.py <<'EOF'
+          from decimal import Decimal
+
+          from src.settings import (
+              load_methodology,
+              load_project_config,
+          )
           from src.validate_config import validate
 
 
           def test_configuration_is_valid():
               result = validate()
+
               assert result["status"] == "OK"
-              assert result["methodology_version"] == "2.0.0-dev"
+              assert (
+                  result["methodology_version"]
+                  == "2.0.0-dev"
+              )
+
+
+          def test_scoring_weights_sum_to_one():
+              methodology = load_methodology()
+              scoring = methodology["scoring"]
+
+              total = (
+                  Decimal(
+                      str(scoring["per_100g_weight"])
+                  )
+                  + Decimal(
+                      str(
+                          scoring[
+                              "per_100kcal_weight"
+                          ]
+                      )
+                  )
+              )
+
+              assert total == Decimal("1.0")
+
+
+          def test_group_weights_sum_to_one():
+              methodology = load_methodology()
+              groups = methodology["group_weights"]
+
+              total = sum(
+                  (
+                      Decimal(str(value))
+                      for value in groups.values()
+                  ),
+                  Decimal("0")
+              )
+
+              assert total == Decimal("1.0")
+
+
+          def test_incomplete_results_are_not_published():
+              project = load_project_config()
+
+              assert (
+                  project["publication"][
+                      "publish_incomplete_results"
+                  ]
+                  is False
+              )
+
+
+          def test_component_scores_are_public():
+              project = load_project_config()
+
+              assert (
+                  project["publication"][
+                      "show_component_scores"
+                  ]
+                  is True
+              )
           EOF
 
+      - name: Utworzenie strony startowej
+        run: |
           cat > public/index.html <<'EOF'
           <!doctype html>
           <html lang="pl">
           <head>
             <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Indeks żywności — Kogucia Łączka</title>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            >
+            <title>
+              Indeks żywności — Kogucia Łączka
+            </title>
+
             <style>
+              :root {
+                color-scheme: light;
+                --green: #274e13;
+                --light-green: #d9ead3;
+                --cream: #f7f8f4;
+                --yellow: #fff2cc;
+                --text: #20251f;
+              }
+
+              * {
+                box-sizing: border-box;
+              }
+
               body {
-                max-width: 900px;
+                max-width: 920px;
                 margin: 50px auto;
                 padding: 20px;
-                font-family: system-ui, sans-serif;
+                font-family:
+                  system-ui,
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  "Segoe UI",
+                  sans-serif;
                 line-height: 1.6;
-                color: #20251f;
-                background: #f7f8f4;
+                color: var(--text);
+                background: var(--cream);
               }
+
               main {
+                padding: 36px;
                 background: white;
-                padding: 32px;
-                border-radius: 14px;
-                box-shadow: 0 4px 20px #00000012;
+                border-radius: 16px;
+                box-shadow: 0 4px 24px #00000012;
               }
-              h1 { color: #274e13; }
+
+              h1 {
+                color: var(--green);
+                line-height: 1.2;
+              }
+
               .status {
                 display: inline-block;
-                padding: 6px 12px;
+                padding: 7px 13px;
                 border-radius: 999px;
-                background: #fff2cc;
+                background: var(--yellow);
                 font-weight: 700;
+              }
+
+              .rules {
+                margin-top: 28px;
+                padding: 20px;
+                border-left: 5px solid var(--green);
+                background: var(--light-green);
               }
             </style>
           </head>
+
           <body>
             <main>
-              <p class="status">Wersja rozwojowa 2.0</p>
-              <h1>Indeks żywności Kogucia Łączka</h1>
-              <p>
-                Trwa budowa automatycznego, audytowalnego indeksu
-                gęstości odżywczej i ekonomicznej żywności.
+              <p class="status">
+                Wersja rozwojowa 2.0
               </p>
+
+              <h1>
+                Indeks żywności Kogucia Łączka
+              </h1>
+
               <p>
-                Wyniki nie są jeszcze publikowane. Najpierw silnik
-                musi przejść kontrolę metodologii i testy referencyjne.
+                Trwa budowa automatycznego,
+                audytowalnego indeksu gęstości
+                odżywczej i ekonomicznej żywności.
               </p>
+
+              <div class="rules">
+                <strong>Najpierw wiarygodność.</strong>
+
+                <p>
+                  Wyniki nie są jeszcze publikowane.
+                  Silnik musi najpierw przejść walidację
+                  metodologii i testy referencyjne.
+                </p>
+              </div>
             </main>
           </body>
           </html>
           EOF
 
-          cat > .github/workflows/01-validate.yml <<'EOF'
-          name: 01 - Walidacja projektu
-
-          on:
-            push:
-              branches: [main]
-            pull_request:
-              branches: [main]
-            workflow_dispatch:
-
-          permissions:
-            contents: read
-
-          jobs:
-            validate:
-              runs-on: ubuntu-latest
-
-              steps:
-                - name: Pobranie repozytorium
-                  uses: actions/checkout@v4
-
-                - name: Python
-                  uses: actions/setup-python@v5
-                  with:
-                    python-version: "3.12"
-                    cache: "pip"
-
-                - name: Instalacja zależności
-                  run: pip install -r requirements.txt
-
-                - name: Kontrola konfiguracji
-                  run: python -m src.validate_config
-
-                - name: Testy
-                  run: pytest -q
-          EOF
-
+      - name: Utworzenie dokumentacji
+        run: |
           cat > README.md <<'EOF'
           # Indeks żywności — Kogucia Łączka
 
-          Otwarty, audytowalny indeks gęstości odżywczej
-          i ekonomicznej żywności.
+          Otwarty i audytowalny indeks gęstości
+          odżywczej oraz ekonomicznej żywności.
 
           ## Status
 
-          Projekt jest obecnie w fazie budowy silnika 2.0.
+          Projekt znajduje się w fazie budowy silnika 2.0.
 
           Wyniki nie są jeszcze publikowane jako ostateczne.
 
@@ -371,7 +586,8 @@ jobs:
           - oddzielenie wartości odżywczej od ceny,
           - źródło każdej wartości,
           - automatyczne testy przed publikacją,
-          - brak publikowania niepełnych danych jako pełnych wyników.
+          - brak publikowania niepełnych danych
+            jako pełnych wyników.
 
           ## Źródła
 
@@ -381,28 +597,121 @@ jobs:
           ## Odpowiedzialność
 
           Indeks ma charakter edukacyjny i analityczny.
-          Nie stanowi diagnozy ani indywidualnego zalecenia medycznego.
+          Nie stanowi diagnozy ani indywidualnego
+          zalecenia medycznego.
           EOF
 
-      - name: Kontrola konfiguracji
+      - name: Instalacja zależności
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          python -m src.validate_config
-          pytest -q
 
-      - name: Zapisanie struktury w repozytorium
+      - name: Kontrola konfiguracji
+        run: |
+          python -m src.validate_config
+
+      - name: Testy automatyczne
+        run: |
+          python -m pytest -q
+
+      - name: Kontrola bezpieczeństwa
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          key = os.environ.get(
+              "USDA_API_KEY",
+              ""
+          ).strip()
+
+          if not key:
+              raise SystemExit(
+                  "BŁĄD: Brak klucza podczas "
+                  "kontroli bezpieczeństwa."
+              )
+
+          forbidden = []
+
+          allowed_suffixes = {
+              ".py",
+              ".yaml",
+              ".yml",
+              ".md",
+              ".txt",
+              ".csv",
+              ".html",
+              ".ini",
+              ".gitignore",
+          }
+
+          ignored_parts = {
+              ".git",
+              ".pytest_cache",
+              "__pycache__",
+          }
+
+          for path in Path(".").rglob("*"):
+              if not path.is_file():
+                  continue
+
+              if any(
+                  part in ignored_parts
+                  for part in path.parts
+              ):
+                  continue
+
+              if (
+                  path.suffix
+                  and path.suffix not in allowed_suffixes
+              ):
+                  continue
+
+              try:
+                  content = path.read_text(
+                      encoding="utf-8"
+                  )
+              except UnicodeDecodeError:
+                  continue
+
+              if key in content:
+                  forbidden.append(str(path))
+
+          if forbidden:
+              raise SystemExit(
+                  "BŁĄD: Klucz USDA wykryto w plikach: "
+                  + ", ".join(forbidden)
+              )
+
+          print("KONTROLA BEZPIECZEŃSTWA: OK")
+          print("Klucz USDA nie występuje w plikach.")
+          PY
+
+      - name: Zapisanie fundamentu w repozytorium
         run: |
           git config user.name "Indeks Żywności Bot"
           git config user.email "actions@users.noreply.github.com"
 
-          git add .
+          git add \
+            README.md \
+            requirements.txt \
+            pytest.ini \
+            config \
+            data \
+            artifacts \
+            src \
+            tests \
+            public
 
           if git diff --cached --quiet; then
             echo "Struktura projektu jest już aktualna."
           else
-            git commit -m "Utworzenie fundamentu silnika 2.0"
-            git push
+            git commit \
+              -m "Utworzenie fundamentu silnika 2.0"
+
+            git push origin HEAD:main
           fi
 
       - name: Podsumowanie
@@ -412,5 +721,6 @@ jobs:
           echo "USDA API: OK"
           echo "KONFIGURACJA: OK"
           echo "TESTY: OK"
-          echo "SILNIK 2.0: FUNDAMENT UTWORZONY"
+          echo "BEZPIECZEŃSTWO: OK"
+          echo "FUNDAMENT SILNIKA 2.0: UTWORZONY"
           echo "=========================================="
