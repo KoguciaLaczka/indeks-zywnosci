@@ -18,18 +18,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Przygotowanie Pythona
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: requirements.txt
+      - name: Informacja o środowisku
+        run: |
+          python3 --version
+          git --version
+          echo "Środowisko GitHub Actions: OK"
 
       - name: Sprawdzenie klucza USDA
         env:
           USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
         run: |
-          python - <<'PY'
+          python3 - <<'PY'
           import json
           import os
           import urllib.error
@@ -63,7 +62,8 @@ jobs:
               data=payload,
               headers={
                   "Content-Type": "application/json",
-                  "User-Agent": "KoguciaLaczka-IndeksZywnosci/2.0"
+                  "User-Agent":
+                      "KoguciaLaczka-IndeksZywnosci/2.0"
               },
               method="POST"
           )
@@ -94,17 +94,18 @@ jobs:
 
           if not foods:
               raise SystemExit(
-                  "BŁĄD: USDA odpowiedziało, ale nie zwróciło produktu."
+                  "BŁĄD: USDA odpowiedziało, "
+                  "ale nie zwróciło produktu."
               )
 
           food = foods[0]
 
           print("USDA API: OK")
-          print("Przykładowy FDC ID:", food.get("fdcId"))
-          print("Przykładowy produkt:", food.get("description"))
+          print("FDC ID:", food.get("fdcId"))
+          print("Produkt:", food.get("description"))
           PY
 
-      - name: Utworzenie struktury katalogów
+      - name: Utworzenie struktury projektu
         run: |
           mkdir -p config
           mkdir -p data/catalog
@@ -179,8 +180,8 @@ jobs:
             version: "2.0.0-dev"
             status: "draft"
             description: >
-              Otwarty i audytowalny indeks gęstości odżywczej
-              oraz ekonomicznej żywności.
+              Otwarty i audytowalny indeks gęstości
+              odżywczej oraz ekonomicznej żywności.
 
           scoring:
             per_100g_weight: 0.60
@@ -217,7 +218,7 @@ jobs:
           product_id,name_pl,fdc_id,category,state,status
           EOF
 
-      - name: Utworzenie modułu ustawień
+      - name: Utworzenie modułu Python
         run: |
           cat > src/__init__.py <<'EOF'
           """
@@ -254,7 +255,8 @@ jobs:
 
               if not isinstance(result, dict):
                   raise ValueError(
-                      f"Konfiguracja {name} nie jest słownikiem."
+                      f"Konfiguracja {name} "
+                      "nie jest słownikiem."
                   )
 
               return result
@@ -268,8 +270,6 @@ jobs:
               return load_yaml("methodology.yaml")
           EOF
 
-      - name: Utworzenie walidatora konfiguracji
-        run: |
           cat > src/validate_config.py <<'EOF'
           from decimal import Decimal
 
@@ -439,7 +439,7 @@ jobs:
               assert total == Decimal("1.0")
 
 
-          def test_incomplete_results_are_not_published():
+          def test_incomplete_results_not_published():
               project = load_project_config()
 
               assert (
@@ -459,6 +459,17 @@ jobs:
                   ]
                   is True
               )
+
+
+          def test_sources_are_public():
+              project = load_project_config()
+
+              assert (
+                  project["publication"][
+                      "show_sources"
+                  ]
+                  is True
+              )
           EOF
 
       - name: Utworzenie strony startowej
@@ -468,10 +479,12 @@ jobs:
           <html lang="pl">
           <head>
             <meta charset="utf-8">
+
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1"
             >
+
             <title>
               Indeks żywności — Kogucia Łączka
             </title>
@@ -551,7 +564,9 @@ jobs:
               </p>
 
               <div class="rules">
-                <strong>Najpierw wiarygodność.</strong>
+                <strong>
+                  Najpierw wiarygodność.
+                </strong>
 
                 <p>
                   Wyniki nie są jeszcze publikowane.
@@ -603,22 +618,22 @@ jobs:
 
       - name: Instalacja zależności
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
 
       - name: Kontrola konfiguracji
         run: |
-          python -m src.validate_config
+          python3 -m src.validate_config
 
       - name: Testy automatyczne
         run: |
-          python -m pytest -q
+          python3 -m pytest -q
 
       - name: Kontrola bezpieczeństwa
         env:
           USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
         run: |
-          python - <<'PY'
+          python3 - <<'PY'
           import os
           from pathlib import Path
 
@@ -635,7 +650,13 @@ jobs:
 
           forbidden = []
 
-          allowed_suffixes = {
+          ignored_parts = {
+              ".git",
+              ".pytest_cache",
+              "__pycache__",
+          }
+
+          text_suffixes = {
               ".py",
               ".yaml",
               ".yml",
@@ -644,13 +665,6 @@ jobs:
               ".csv",
               ".html",
               ".ini",
-              ".gitignore",
-          }
-
-          ignored_parts = {
-              ".git",
-              ".pytest_cache",
-              "__pycache__",
           }
 
           for path in Path(".").rglob("*"):
@@ -665,7 +679,7 @@ jobs:
 
               if (
                   path.suffix
-                  and path.suffix not in allowed_suffixes
+                  and path.suffix not in text_suffixes
               ):
                   continue
 
@@ -692,7 +706,8 @@ jobs:
       - name: Zapisanie fundamentu w repozytorium
         run: |
           git config user.name "Indeks Żywności Bot"
-          git config user.email "actions@users.noreply.github.com"
+          git config user.email \
+            "actions@users.noreply.github.com"
 
           git add \
             README.md \
