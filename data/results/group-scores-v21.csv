@@ -1,0 +1,36 @@
+﻿product_id,name_pl,group,available,expected,completeness,score_raw,score_cautious,weight
+BEEF-LIVER-RAW,Wątroba wołowa surowa,minerals,9,9,1.0,37.1392151675485,37.1392151675485,0.3
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamins,13,13,1.0,64.98838064713064,64.98838064713064,0.3
+BEEF-LIVER-RAW,Wątroba wołowa surowa,protein_and_amino_acids,2,2,1.0,36.49718518518519,36.49718518518519,0.2
+BEEF-LIVER-RAW,Wątroba wołowa surowa,fatty_acids,4,4,1.0,0.8953807740324594,0.8953807740324594,0.1
+BEEF-LIVER-RAW,Wątroba wołowa surowa,fiber_and_functional,1,1,1.0,0.0,0.0,0.1
+BEEF-HEART-RAW,Serce wołowe surowe,minerals,9,9,1.0,19.1303921871779,19.1303921871779,0.3
+BEEF-HEART-RAW,Serce wołowe surowe,vitamins,11,13,0.8461538461538461,27.35527527126553,23.146771383378525,0.3
+BEEF-HEART-RAW,Serce wołowe surowe,protein_and_amino_acids,1,2,0.5,33.921142857142854,16.960571428571427,0.2
+BEEF-HEART-RAW,Serce wołowe surowe,fatty_acids,4,4,1.0,1.301284109149278,1.301284109149278,0.1
+BEEF-HEART-RAW,Serce wołowe surowe,fiber_and_functional,1,1,1.0,0.0,0.0,0.1
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,minerals,8,9,0.8888888888888888,10.537154445190033,9.366359506835584,0.3
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamins,0,13,0.0,0.0,0.0,0.3
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,protein_and_amino_acids,1,2,0.5,29.64459340014973,14.822296700074865,0.2
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,fatty_acids,0,4,0.0,0.0,0.0,0.1
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,fiber_and_functional,0,1,0.0,0.0,0.0,0.1
+EGG-WHOLE-RAW,Jajo kurze całe surowe,minerals,9,9,1.0,13.215734366643458,13.215734366643458,0.3
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamins,13,13,1.0,18.68666818321539,18.68666818321539,0.3
+EGG-WHOLE-RAW,Jajo kurze całe surowe,protein_and_amino_acids,2,2,1.0,22.09857342657343,22.09857342657343,0.2
+EGG-WHOLE-RAW,Jajo kurze całe surowe,fatty_acids,4,4,1.0,14.767124795531334,14.767124795531334,0.1
+EGG-WHOLE-RAW,Jajo kurze całe surowe,fiber_and_functional,1,1,1.0,0.0,0.0,0.1
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,minerals,9,9,1.0,10.165805028305027,10.165805028305027,0.3
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamins,13,13,1.0,30.278731396808322,30.278731396808322,0.3
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,protein_and_amino_acids,2,2,1.0,32.357846153846154,32.357846153846154,0.2
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,fatty_acids,4,4,1.0,64.66806002985778,64.66806002985778,0.1
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,fiber_and_functional,1,1,1.0,0.0,0.0,0.1
+LENTILS-COOKED,Soczewica gotowana bez soli,minerals,9,9,1.0,15.486344479275512,15.486344479275512,0.3
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamins,13,13,1.0,11.213204668894324,11.213204668894324,0.3
+LENTILS-COOKED,Soczewica gotowana bez soli,protein_and_amino_acids,2,2,1.0,16.02098950524738,16.02098950524738,0.2
+LENTILS-COOKED,Soczewica gotowana bez soli,fatty_acids,3,4,0.75,0.48479917344698437,0.3635993800852383,0.1
+LENTILS-COOKED,Soczewica gotowana bez soli,fiber_and_functional,1,1,1.0,29.85655172413793,29.85655172413793,0.1
+BROCCOLI-RAW,Brokuł surowy,minerals,9,9,1.0,13.020209235209235,13.020209235209235,0.3
+BROCCOLI-RAW,Brokuł surowy,vitamins,13,13,1.0,30.01332233942528,30.01332233942528,0.3
+BROCCOLI-RAW,Brokuł surowy,protein_and_amino_acids,2,2,1.0,7.513596914175507,7.513596914175507,0.2
+BROCCOLI-RAW,Brokuł surowy,fatty_acids,3,4,0.75,0.32601894690460453,0.2445142101784534,0.1
+BROCCOLI-RAW,Brokuł surowy,fiber_and_functional,1,1,1.0,18.47529411764706,18.47529411764706,0.1

@@ -1,0 +1,204 @@
+﻿product_id,name_pl,nutrient_key,nutrient_name,group,value,unit,reference,reference_source,points_100g,points_100kcal,weighted_score,data_status,source
+BEEF-LIVER-RAW,Wątroba wołowa surowa,protein,Białko,protein_and_amino_acids,20.36,g,50.0,UE RI,40.72,30.162962962962965,36.49718518518519,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_a_rae,Witamina A (RAE),vitamins,4968.0,ug,800.0,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_c,Witamina C,vitamins,1.3,mg,80.0,UE NRV,1.625,1.2037037037037037,1.4564814814814815,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_d,Witamina D,vitamins,1.2,ug,5.0,UE NRV,24.0,17.777777777777775,21.51111111111111,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_e,Witamina E,vitamins,0.38,mg,12.0,UE NRV,3.166666666666667,2.3456790123456788,2.8382716049382717,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_k,Witamina K,vitamins,3.1,ug,75.0,UE NRV,4.133333333333333,3.0617283950617287,3.704691358024691,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,thiamin,Tiamina B1,vitamins,0.189,mg,1.1,UE NRV,17.18181818181818,12.727272727272727,15.399999999999999,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,riboflavin,Ryboflawina B2,vitamins,2.755,mg,1.4,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,niacin,Niacyna B3,vitamins,13.175,mg,16.0,UE NRV,82.34375,60.995370370370374,73.80439814814815,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,pantothenic_acid,Kwas pantotenowy B5,vitamins,7.173,mg,6.0,UE NRV,119.55,88.55555555555556,107.1522222222222,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_b6,Witamina B6,vitamins,1.083,mg,1.4,UE NRV,77.35714285714286,57.3015873015873,69.33492063492064,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,folate,Foliany,vitamins,290.0,ug,200.0,UE NRV,120.0,107.40740740740742,114.96296296296296,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,vitamin_b12,Witamina B12,vitamins,59.3,ug,2.5,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,choline,Cholina,vitamins,333.3,mg,400.0,EFSA AI — warstwa dodatkowa,83.325,61.72222222222222,74.68388888888889,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,calcium,Wapń,minerals,5.0,mg,800.0,UE NRV,0.625,0.4629629629629629,0.5601851851851851,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,iron,Żelazo,minerals,4.9,mg,14.0,UE NRV,35.0,25.925925925925924,31.37037037037037,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,magnesium,Magnez,minerals,18.0,mg,375.0,UE NRV,4.8,3.5555555555555554,4.302222222222222,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,phosphorus,Fosfor,minerals,387.0,mg,700.0,UE NRV,55.285714285714285,40.952380952380956,49.55238095238096,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,potassium,Potas,minerals,313.0,mg,2000.0,UE NRV,15.65,11.592592592592592,14.027037037037037,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,zinc,Cynk,minerals,4.0,mg,10.0,UE NRV,40.0,29.629629629629633,35.851851851851855,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,copper,Miedź,minerals,9.755,mg,1.0,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,manganese,Mangan,minerals,0.31,mg,2.0,UE NRV,15.5,11.481481481481481,13.892592592592592,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,selenium,Selen,minerals,39.7,ug,55.0,UE NRV,72.18181818181819,53.46801346801347,64.6962962962963,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,fiber,Błonnik,fiber_and_functional,0.0,g,25.0,wartość referencyjna pilota,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,ala,ALA omega-3,fatty_acids,0.007,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",0.6363636363636362,0.47138047138047134,0.5703703703703703,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,linoleic_acid,LA omega-6,fatty_acids,0.299,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,3.359550561797753,2.4885559717020387,3.0111527257594672,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,epa,EPA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,dha,DHA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 169451
+BEEF-LIVER-RAW,Wątroba wołowa surowa,amino_acid_score,Amino Acid Score,protein_and_amino_acids,153.7891719540082,pkt,100.0,FAO; profil bez korekty strawności,100.0,100.0,100.0,Obliczono AAS; to nie DIAAS,USDA FDC 169451 / FAO
+BEEF-HEART-RAW,Serce wołowe surowe,protein,Białko,protein_and_amino_acids,17.72,g,50.0,UE RI,35.44,31.64285714285714,33.921142857142854,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_a_rae,Witamina A (RAE),vitamins,0.0,ug,800.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_c,Witamina C,vitamins,2.0,mg,80.0,UE NRV,2.5,2.2321428571428568,2.392857142857143,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_d,Witamina D,vitamins,,ug,5.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_e,Witamina E,vitamins,0.22,mg,12.0,UE NRV,1.8333333333333333,1.636904761904762,1.7547619047619047,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_k,Witamina K,vitamins,0.0,ug,75.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,thiamin,Tiamina B1,vitamins,0.238,mg,1.1,UE NRV,21.636363636363633,19.318181818181817,20.709090909090904,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,riboflavin,Ryboflawina B2,vitamins,0.906,mg,1.4,UE NRV,64.71428571428572,57.78061224489795,61.94081632653061,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,niacin,Niacyna B3,vitamins,7.53,mg,16.0,UE NRV,47.0625,42.02008928571429,45.04553571428572,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,pantothenic_acid,Kwas pantotenowy B5,vitamins,1.79,mg,6.0,UE NRV,29.833333333333336,26.636904761904763,28.554761904761907,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_b6,Witamina B6,vitamins,0.279,mg,1.4,UE NRV,19.92857142857143,17.79336734693878,19.074489795918367,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,folate,Foliany,vitamins,3.0,ug,200.0,UE NRV,1.5,1.3392857142857142,1.4357142857142855,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,vitamin_b12,Witamina B12,vitamins,8.55,ug,2.5,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,choline,Cholina,vitamins,,mg,400.0,EFSA AI — warstwa dodatkowa,,,,Brak danych — nie zero,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,calcium,Wapń,minerals,7.0,mg,800.0,UE NRV,0.8750000000000001,0.78125,0.8375,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,iron,Żelazo,minerals,4.31,mg,14.0,UE NRV,30.785714285714285,27.487244897959183,29.466326530612246,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,magnesium,Magnez,minerals,21.0,mg,375.0,UE NRV,5.6000000000000005,5.0,5.36,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,phosphorus,Fosfor,minerals,212.0,mg,700.0,UE NRV,30.28571428571429,27.04081632653061,28.987755102040815,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,potassium,Potas,minerals,287.0,mg,2000.0,UE NRV,14.35,12.812499999999998,13.735,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,zinc,Cynk,minerals,1.7,mg,10.0,UE NRV,17.0,15.178571428571427,16.271428571428572,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,copper,Miedź,minerals,0.396,mg,1.0,UE NRV,39.6,35.35714285714286,37.902857142857144,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,manganese,Mangan,minerals,0.035,mg,2.0,UE NRV,1.7500000000000002,1.5625,1.675,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,selenium,Selen,minerals,21.8,ug,55.0,UE NRV,39.63636363636363,35.3896103896104,37.93766233766234,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,fiber,Błonnik,fiber_and_functional,0.0,g,25.0,wartość referencyjna pilota,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,ala,ALA omega-3,fatty_acids,0.011,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",0.9999999999999999,0.8928571428571428,0.9571428571428571,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,linoleic_acid,LA omega-6,fatty_acids,0.395,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,4.438202247191011,3.9626805778491176,4.2479935794542545,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,epa,EPA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,dha,DHA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 168625
+BEEF-HEART-RAW,Serce wołowe surowe,amino_acid_score,Amino Acid Score,protein_and_amino_acids,,pkt,100.0,FAO; profil bez korekty strawności,,,,Brak pełnego profilu; nie DIAAS,USDA FDC 168625 / FAO
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,protein,Białko,protein_and_amino_acids,18.15625,g,50.0,UE RI,36.3125,19.642733500374327,29.64459340014973,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_a_rae,Witamina A (RAE),vitamins,,ug,800.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_c,Witamina C,vitamins,,mg,80.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_d,Witamina D,vitamins,,ug,5.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_e,Witamina E,vitamins,,mg,12.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_k,Witamina K,vitamins,,ug,75.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,thiamin,Tiamina B1,vitamins,,mg,1.1,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,riboflavin,Ryboflawina B2,vitamins,,mg,1.4,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,niacin,Niacyna B3,vitamins,,mg,16.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,pantothenic_acid,Kwas pantotenowy B5,vitamins,,mg,6.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_b6,Witamina B6,vitamins,,mg,1.4,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,folate,Foliany,vitamins,,ug,200.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,vitamin_b12,Witamina B12,vitamins,,ug,2.5,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,choline,Cholina,vitamins,,mg,400.0,EFSA AI — warstwa dodatkowa,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,calcium,Wapń,minerals,7.135,mg,800.0,UE NRV,0.891875,0.4824471722036861,0.7281038688814744,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,iron,Żelazo,minerals,2.128,mg,14.0,UE NRV,15.2,8.222225107213488,12.408890042885394,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,magnesium,Magnez,minerals,16.49,mg,375.0,UE NRV,4.397333333333333,2.378675298560533,3.589870119424213,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,phosphorus,Fosfor,minerals,148.0,mg,700.0,UE NRV,21.142857142857142,11.436929660409739,17.26048614987818,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,potassium,Potas,minerals,281.4,mg,2000.0,UE NRV,14.069999999999999,7.6109675827956424,11.486387033118255,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,zinc,Cynk,minerals,4.194,mg,10.0,UE NRV,41.94,22.68685006556143,34.23874002622457,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,copper,Miedź,minerals,0.05616,mg,1.0,UE NRV,5.6160000000000005,3.037895802770457,4.584758321108183,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,manganese,Mangan,minerals,0.0,mg,2.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,selenium,Selen,minerals,,ug,55.0,UE NRV,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,fiber,Błonnik,fiber_and_functional,,g,25.0,wartość referencyjna pilota,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,ala,ALA omega-3,fatty_acids,,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,linoleic_acid,LA omega-6,fatty_acids,,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,epa,EPA omega-3,fatty_acids,,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,dha,DHA omega-3,fatty_acids,,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,,,,Brak danych — nie zero,USDA FDC 2514743
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,amino_acid_score,Amino Acid Score,protein_and_amino_acids,,pkt,100.0,FAO; profil bez korekty strawności,,,,Brak pełnego profilu; nie DIAAS,USDA FDC 2514743 / FAO
+EGG-WHOLE-RAW,Jajo kurze całe surowe,protein,Białko,protein_and_amino_acids,12.56,g,50.0,UE RI,25.120000000000005,17.566433566433567,22.09857342657343,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_a_rae,Witamina A (RAE),vitamins,160.0,ug,800.0,UE NRV,20.0,13.986013986013987,17.594405594405593,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_c,Witamina C,vitamins,0.0,mg,80.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_d,Witamina D,vitamins,2.0,ug,5.0,UE NRV,40.0,27.97202797202797,35.18881118881119,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_e,Witamina E,vitamins,1.05,mg,12.0,UE NRV,8.75,6.11888111888112,7.697552447552448,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_k,Witamina K,vitamins,0.3,ug,75.0,UE NRV,0.4,0.27972027972027974,0.35188811188811187,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,thiamin,Tiamina B1,vitamins,0.04,mg,1.1,UE NRV,3.6363636363636362,2.5429116338207245,3.1989828353464715,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,riboflavin,Ryboflawina B2,vitamins,0.457,mg,1.4,UE NRV,32.642857142857146,22.82717282717283,28.71658341658342,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,niacin,Niacyna B3,vitamins,0.075,mg,16.0,UE NRV,0.46875,0.3277972027972028,0.41236888111888115,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,pantothenic_acid,Kwas pantotenowy B5,vitamins,1.533,mg,6.0,UE NRV,25.55,17.867132867132867,22.476853146853145,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_b6,Witamina B6,vitamins,0.17,mg,1.4,UE NRV,12.142857142857144,8.491508491508492,10.682317682317684,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,folate,Foliany,vitamins,47.0,ug,200.0,UE NRV,23.5,16.433566433566433,20.673426573426575,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,vitamin_b12,Witamina B12,vitamins,0.89,ug,2.5,UE NRV,35.6,24.895104895104897,31.31804195804196,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,choline,Cholina,vitamins,293.8,mg,400.0,EFSA AI — warstwa dodatkowa,73.45,51.36363636363637,64.61545454545455,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,calcium,Wapń,minerals,56.0,mg,800.0,UE NRV,7.000000000000001,4.895104895104895,6.1580419580419585,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,iron,Żelazo,minerals,1.75,mg,14.0,UE NRV,12.5,8.741258741258742,10.996503496503497,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,magnesium,Magnez,minerals,12.0,mg,375.0,UE NRV,3.2,2.237762237762238,2.815104895104895,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,phosphorus,Fosfor,minerals,198.0,mg,700.0,UE NRV,28.285714285714285,19.78021978021978,24.883516483516484,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,potassium,Potas,minerals,138.0,mg,2000.0,UE NRV,6.9,4.825174825174825,6.07006993006993,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,zinc,Cynk,minerals,1.29,mg,10.0,UE NRV,12.9,9.020979020979022,11.348391608391609,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,copper,Miedź,minerals,0.072,mg,1.0,UE NRV,7.199999999999999,5.034965034965035,6.333986013986014,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,manganese,Mangan,minerals,0.028,mg,2.0,UE NRV,1.4000000000000001,0.979020979020979,1.2316083916083918,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,selenium,Selen,minerals,30.7,ug,55.0,UE NRV,55.81818181818182,39.03369357914812,49.10438652256834,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,fiber,Błonnik,fiber_and_functional,0.0,g,25.0,wartość referencyjna pilota,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,ala,ALA omega-3,fatty_acids,0.036,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",3.2727272727272725,2.288620470438652,2.8790845518118244,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,linoleic_acid,LA omega-6,fatty_acids,1.555,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,17.47191011235955,12.218118959691994,15.370393651292527,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,epa,EPA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,dha,DHA omega-3,fatty_acids,0.058,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,46.400000000000006,32.44755244755245,40.81902097902098,USDA — wartość bezpośrednia,USDA FDC 171287
+EGG-WHOLE-RAW,Jajo kurze całe surowe,amino_acid_score,Amino Acid Score,protein_and_amino_acids,141.74584943092825,pkt,100.0,FAO; profil bez korekty strawności,100.0,100.0,100.0,Obliczono AAS; to nie DIAAS,USDA FDC 171287 / FAO
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,protein,Białko,protein_and_amino_acids,20.42,g,50.0,UE RI,40.84,19.634615384615387,32.357846153846154,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_a_rae,Witamina A (RAE),vitamins,58.0,ug,800.0,UE NRV,7.249999999999999,3.4855769230769234,5.744230769230769,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_c,Witamina C,vitamins,3.9,mg,80.0,UE NRV,4.875,2.34375,3.8625,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_d,Witamina D,vitamins,11.0,ug,5.0,UE NRV,120.0,105.76923076923077,114.30769230769232,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_e,Witamina E,vitamins,3.55,mg,12.0,UE NRV,29.583333333333332,14.222756410256409,23.439102564102562,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_k,Witamina K,vitamins,0.5,ug,75.0,UE NRV,0.6666666666666667,0.3205128205128205,0.5282051282051282,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,thiamin,Tiamina B1,vitamins,0.207,mg,1.1,UE NRV,18.818181818181813,9.047202797202795,14.909790209790206,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,riboflavin,Ryboflawina B2,vitamins,0.155,mg,1.4,UE NRV,11.071428571428573,5.322802197802198,8.771978021978022,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,niacin,Niacyna B3,vitamins,8.672,mg,16.0,UE NRV,54.2,26.05769230769231,42.94307692307693,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,pantothenic_acid,Kwas pantotenowy B5,vitamins,1.547,mg,6.0,UE NRV,25.78333333333333,12.395833333333332,20.42833333333333,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_b6,Witamina B6,vitamins,0.636,mg,1.4,UE NRV,45.42857142857144,21.840659340659343,35.993406593406604,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,folate,Foliany,vitamins,26.0,ug,200.0,UE NRV,13.0,6.25,10.3,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,vitamin_b12,Witamina B12,vitamins,3.23,ug,2.5,UE NRV,120.0,62.11538461538461,96.84615384615384,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,choline,Cholina,vitamins,78.5,mg,400.0,EFSA AI — warstwa dodatkowa,19.625,9.435096153846153,15.549038461538462,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,calcium,Wapń,minerals,9.0,mg,800.0,UE NRV,1.125,0.5408653846153846,0.8913461538461538,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,iron,Żelazo,minerals,0.34,mg,14.0,UE NRV,2.428571428571429,1.1675824175824177,1.9241758241758244,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,magnesium,Magnez,minerals,27.0,mg,375.0,UE NRV,7.199999999999999,3.4615384615384617,5.704615384615384,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,phosphorus,Fosfor,minerals,240.0,mg,700.0,UE NRV,34.285714285714285,16.483516483516482,27.16483516483516,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,potassium,Potas,minerals,363.0,mg,2000.0,UE NRV,18.15,8.725961538461538,14.380384615384614,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,zinc,Cynk,minerals,0.36,mg,10.0,UE NRV,3.5999999999999996,1.7307692307692308,2.852307692307692,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,copper,Miedź,minerals,0.045,mg,1.0,UE NRV,4.5,2.1634615384615383,3.565384615384615,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,manganese,Mangan,minerals,0.011,mg,2.0,UE NRV,0.5499999999999999,0.26442307692307687,0.4357692307692307,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,selenium,Selen,minerals,24.0,ug,55.0,UE NRV,43.63636363636363,20.97902097902098,34.57342657342657,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,fiber,Błonnik,fiber_and_functional,0.0,g,25.0,wartość referencyjna pilota,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,ala,ALA omega-3,fatty_acids,0.148,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",13.454545454545453,6.468531468531467,10.660139860139859,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,linoleic_acid,LA omega-6,fatty_acids,0.9,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,10.112359550561797,4.86171132238548,8.01210025929127,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,epa,EPA omega-3,fatty_acids,0.862,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,dha,DHA omega-3,fatty_acids,1.104,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 175167
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,amino_acid_score,Amino Acid Score,protein_and_amino_acids,129.65430869767667,pkt,100.0,FAO; profil bez korekty strawności,100.0,100.0,100.0,Obliczono AAS; to nie DIAAS,USDA FDC 175167 / FAO
+LENTILS-COOKED,Soczewica gotowana bez soli,protein,Białko,protein_and_amino_acids,9.02,g,50.0,UE RI,18.04,15.551724137931034,17.044689655172412,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_a_rae,Witamina A (RAE),vitamins,0.0,ug,800.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_c,Witamina C,vitamins,1.5,mg,80.0,UE NRV,1.875,1.6163793103448276,1.771551724137931,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_d,Witamina D,vitamins,0.0,ug,5.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_e,Witamina E,vitamins,0.11,mg,12.0,UE NRV,0.9166666666666666,0.7902298850574712,0.8660919540229884,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_k,Witamina K,vitamins,1.7,ug,75.0,UE NRV,2.2666666666666666,1.9540229885057472,2.1416091954022987,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,thiamin,Tiamina B1,vitamins,0.169,mg,1.1,UE NRV,15.363636363636363,13.244514106583072,14.515987460815046,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,riboflavin,Ryboflawina B2,vitamins,0.073,mg,1.4,UE NRV,5.214285714285714,4.495073891625616,4.926600985221675,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,niacin,Niacyna B3,vitamins,1.06,mg,16.0,UE NRV,6.625,5.711206896551724,6.25948275862069,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,pantothenic_acid,Kwas pantotenowy B5,vitamins,0.638,mg,6.0,UE NRV,10.633333333333333,9.166666666666666,10.046666666666667,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_b6,Witamina B6,vitamins,0.178,mg,1.4,UE NRV,12.714285714285714,10.960591133004925,12.012807881773398,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,folate,Foliany,vitamins,181.0,ug,200.0,UE NRV,90.5,78.01724137931035,85.50689655172414,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,vitamin_b12,Witamina B12,vitamins,0.0,ug,2.5,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,choline,Cholina,vitamins,32.7,mg,400.0,EFSA AI — warstwa dodatkowa,8.175,7.047413793103449,7.72396551724138,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,calcium,Wapń,minerals,19.0,mg,800.0,UE NRV,2.375,2.0474137931034484,2.2439655172413797,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,iron,Żelazo,minerals,3.33,mg,14.0,UE NRV,23.785714285714285,20.504926108374384,22.473399014778323,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,magnesium,Magnez,minerals,36.0,mg,375.0,UE NRV,9.6,8.275862068965518,9.070344827586208,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,phosphorus,Fosfor,minerals,180.0,mg,700.0,UE NRV,25.71428571428571,22.167487684729064,24.295566502463053,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,potassium,Potas,minerals,369.0,mg,2000.0,UE NRV,18.45,15.9051724137931,17.43206896551724,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,zinc,Cynk,minerals,1.27,mg,10.0,UE NRV,12.7,10.948275862068964,11.999310344827585,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,copper,Miedź,minerals,0.251,mg,1.0,UE NRV,25.1,21.637931034482758,23.715172413793105,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,manganese,Mangan,minerals,0.494,mg,2.0,UE NRV,24.7,21.293103448275865,23.337241379310345,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,selenium,Selen,minerals,2.8,ug,55.0,UE NRV,5.09090909090909,4.38871473354232,4.810031347962382,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,fiber,Błonnik,fiber_and_functional,7.9,g,25.0,wartość referencyjna pilota,31.6,27.241379310344826,29.85655172413793,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,ala,ALA omega-3,fatty_acids,,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",,,,Brak danych — nie zero,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,linoleic_acid,LA omega-6,fatty_acids,0.137,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,1.5393258426966292,1.3270050368074389,1.4543975203409532,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,epa,EPA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,dha,DHA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 172421
+LENTILS-COOKED,Soczewica gotowana bez soli,amino_acid_score,Amino Acid Score,protein_and_amino_acids,93.99402294418202,pkt,100.0,FAO; profil bez korekty strawności,93.99402294418202,93.99402294418202,93.99402294418202,Obliczono AAS; to nie DIAAS,USDA FDC 172421 / FAO
+BROCCOLI-RAW,Brokuł surowy,protein,Białko,protein_and_amino_acids,2.82,g,50.0,UE RI,5.64,16.588235294117645,10.019294117647059,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_a_rae,Witamina A (RAE),vitamins,31.0,ug,800.0,UE NRV,3.875,11.397058823529411,6.883823529411764,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_c,Witamina C,vitamins,89.2,mg,80.0,UE NRV,111.5,120.0,114.89999999999999,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_d,Witamina D,vitamins,0.0,ug,5.0,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_e,Witamina E,vitamins,0.78,mg,12.0,UE NRV,6.5,19.11764705882353,11.547058823529412,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_k,Witamina K,vitamins,101.6,ug,75.0,UE NRV,120.0,120.0,120.0,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,thiamin,Tiamina B1,vitamins,0.071,mg,1.1,UE NRV,6.454545454545453,18.983957219251334,11.466310160427806,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,riboflavin,Ryboflawina B2,vitamins,0.117,mg,1.4,UE NRV,8.35714285714286,24.579831932773114,14.84621848739496,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,niacin,Niacyna B3,vitamins,0.639,mg,16.0,UE NRV,3.99375,11.746323529411764,7.094779411764705,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,pantothenic_acid,Kwas pantotenowy B5,vitamins,0.573,mg,6.0,UE NRV,9.549999999999999,28.08823529411765,16.96529411764706,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_b6,Witamina B6,vitamins,0.175,mg,1.4,UE NRV,12.5,36.764705882352935,22.205882352941174,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,folate,Foliany,vitamins,63.0,ug,200.0,UE NRV,31.5,92.64705882352942,55.95882352941177,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,vitamin_b12,Witamina B12,vitamins,0.0,ug,2.5,UE NRV,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,choline,Cholina,vitamins,18.7,mg,400.0,EFSA AI — warstwa dodatkowa,4.675,13.749999999999998,8.305,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,calcium,Wapń,minerals,47.0,mg,800.0,UE NRV,5.875,17.27941176470588,10.436764705882352,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,iron,Żelazo,minerals,0.73,mg,14.0,UE NRV,5.214285714285714,15.336134453781511,9.263025210084033,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,magnesium,Magnez,minerals,21.0,mg,375.0,UE NRV,5.6000000000000005,16.470588235294116,9.948235294117648,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,phosphorus,Fosfor,minerals,66.0,mg,700.0,UE NRV,9.428571428571429,27.73109243697479,16.749579831932774,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,potassium,Potas,minerals,316.0,mg,2000.0,UE NRV,15.8,46.470588235294116,28.06823529411765,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,zinc,Cynk,minerals,0.41,mg,10.0,UE NRV,4.1,12.058823529411763,7.283529411764706,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,copper,Miedź,minerals,0.049,mg,1.0,UE NRV,4.9,14.411764705882355,8.704705882352942,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,manganese,Mangan,minerals,0.21,mg,2.0,UE NRV,10.5,30.882352941176467,18.652941176470588,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,selenium,Selen,minerals,2.5,ug,55.0,UE NRV,4.545454545454546,13.368983957219251,8.074866310160427,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,fiber,Błonnik,fiber_and_functional,2.6,g,25.0,wartość referencyjna pilota,10.4,30.58823529411765,18.47529411764706,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,ala,ALA omega-3,fatty_acids,,g,1.1,"EFSA AI 0,5 E%; przeliczenie dla 2000 kcal",,,,Brak danych — nie zero,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,linoleic_acid,LA omega-6,fatty_acids,0.049,g,8.9,EFSA AI 4 E%; przeliczenie dla 2000 kcal,0.550561797752809,1.6192994051553204,0.9780568407138136,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,epa,EPA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,dha,DHA omega-3,fatty_acids,0.0,g,0.125,Połowa referencji EPA+DHA 250 mg/dzień,0.0,0.0,0.0,USDA — wartość bezpośrednia,USDA FDC 170379
+BROCCOLI-RAW,Brokuł surowy,amino_acid_score,Amino Acid Score,protein_and_amino_acids,74.9912800837112,pkt,100.0,FAO; profil bez korekty strawności,74.9912800837112,74.9912800837112,74.9912800837112,Obliczono AAS; to nie DIAAS,USDA FDC 170379 / FAO

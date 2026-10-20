@@ -1,0 +1,44 @@
+{
+  "version": "2.1.0-pilot",
+  "status": "pilot_po_audycie",
+  "weights": {
+    "per_100g": 0.60,
+    "per_100kcal": 0.40
+  },
+  "group_weights": {
+    "minerals": 0.30,
+    "vitamins": 0.30,
+    "protein_and_amino_acids": 0.20,
+    "fatty_acids": 0.10,
+    "fiber_and_functional": 0.10
+  },
+  "nutrient_cap": 120.0,
+  "completeness": {
+    "full": 0.80,
+    "conditional": 0.60
+  },
+  "protein_quality": {
+    "method": "AAS",
+    "diaas": false,
+    "digestibility_correction": false,
+    "quality_cap": 100.0,
+    "description": "Amino Acid Score bez korekty strawności; nie jest to DIAAS."
+  },
+  "fatty_acids": {
+    "ala_reference_g": 1.1,
+    "linoleic_acid_reference_g": 8.9,
+    "epa_dha_reference_g": 0.25,
+    "energy_assumption_kcal": 2000
+  },
+  "rules": {
+    "missing_is_zero": false,
+    "measured_zero_is_zero": true,
+    "rank_only_if_completeness_at_least": 0.60,
+    "group_weighted_completeness": true,
+    "no_global_double_penalty": true,
+    "price_is_separate_layer": true,
+    "bioavailability_is_separate_layer": true,
+    "production_system_is_separate_layer": true
+  },
+  "disclaimer": "Wyniki pilotażowe do celów edukacyjnych i analitycznych. Indeks nie stanowi diagnozy ani indywidualnego zalecenia medycznego."
+}

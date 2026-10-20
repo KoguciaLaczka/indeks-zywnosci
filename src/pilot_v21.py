@@ -1,0 +1,1043 @@
+from __future__ import annotations
+
+import csv
+import html
+import json
+import math
+import os
+import time
+from collections import defaultdict
+from pathlib import Path
+from typing import Any
+
+import requests
+
+import src.pilot_v2 as base
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data"
+PUBLIC = ROOT / "public"
+CONFIG = ROOT / "config"
+
+VERSION = "2.1.0-pilot"
+
+GROUP_WEIGHTS = {
+    "minerals": 0.30,
+    "vitamins": 0.30,
+    "protein_and_amino_acids": 0.20,
+    "fatty_acids": 0.10,
+    "fiber_and_functional": 0.10,
+}
+
+FULL_MINIMUM = 0.80
+CONDITIONAL_MINIMUM = 0.60
+CAP = 120.0
+
+# Wzorzec FAO dla starszych dzieci, młodzieży i dorosłych.
+# Jednostka: mg aminokwasu na g białka.
+base.AMINO_REFERENCE = {
+    "histidine": 16.0,
+    "isoleucine": 30.0,
+    "leucine": 61.0,
+    "lysine": 48.0,
+    "sulfur": 23.0,
+    "aromatic": 41.0,
+    "threonine": 25.0,
+    "tryptophan": 6.6,
+    "valine": 40.0,
+}
+
+# Korekta referencji pilota oraz dodanie EPA i DHA.
+NUTRIENTS = []
+
+for original in base.NUTRIENTS:
+    item = dict(original)
+
+    if item["key"] == "ala":
+        item["reference"] = 1.1
+        item["reference_source"] = (
+            "EFSA AI 0,5 E%; przeliczenie dla 2000 kcal"
+        )
+
+    if item["key"] == "linoleic_acid":
+        item["reference"] = 8.9
+        item["reference_source"] = (
+            "EFSA AI 4 E%; przeliczenie dla 2000 kcal"
+        )
+
+    NUTRIENTS.append(item)
+
+NUTRIENTS.extend(
+    [
+        {
+            "key": "epa",
+            "name_pl": "EPA omega-3",
+            "group": "fatty_acids",
+            "fdc_ids": [1278],
+            "reference": 0.125,
+            "unit": "g",
+            "reference_source": (
+                "Połowa referencji EPA+DHA 250 mg/dzień"
+            ),
+        },
+        {
+            "key": "dha",
+            "name_pl": "DHA omega-3",
+            "group": "fatty_acids",
+            "fdc_ids": [1272],
+            "reference": 0.125,
+            "unit": "g",
+            "reference_source": (
+                "Połowa referencji EPA+DHA 250 mg/dzień"
+            ),
+        },
+    ]
+)
+
+DEFINITIONS_BY_GROUP = defaultdict(list)
+
+for definition in NUTRIENTS:
+    DEFINITIONS_BY_GROUP[
+        definition["group"]
+    ].append(definition)
+
+
+def read_json(path: Path) -> Any:
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def read_catalog() -> list[dict[str, str]]:
+    path = DATA / "catalog" / "pilot-products-v21.csv"
+
+    with path.open(
+        "r",
+        encoding="utf-8",
+        newline=""
+    ) as handle:
+        return list(csv.DictReader(handle))
+
+
+def write_json(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(
+            value,
+            handle,
+            ensure_ascii=False,
+            indent=2,
+        )
+
+
+def write_csv(
+    path: Path,
+    rows: list[dict[str, Any]],
+    columns: list[str],
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with path.open(
+        "w",
+        encoding="utf-8-sig",
+        newline=""
+    ) as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=columns,
+            extrasaction="ignore",
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def status_for(completeness: float) -> str:
+    if completeness >= FULL_MINIMUM:
+        return "Pełny profil pilotażowy"
+
+    if completeness >= CONDITIONAL_MINIMUM:
+        return "Profil warunkowy"
+
+    return "Profil eksperymentalny — poza rankingiem"
+
+
+def score_component(
+    value: float,
+    reference: float,
+    energy: float,
+) -> tuple[float, float, float]:
+    points_100g = min(
+        value / reference * 100.0,
+        CAP,
+    )
+
+    value_100kcal = value / energy * 100.0
+
+    points_100kcal = min(
+        value_100kcal / reference * 100.0,
+        CAP,
+    )
+
+    combined = (
+        0.60 * points_100g
+        + 0.40 * points_100kcal
+    )
+
+    return (
+        points_100g,
+        points_100kcal,
+        combined,
+    )
+
+
+def calculate_group(
+    group: str,
+    scores: list[float],
+    available: int,
+    expected: int,
+) -> dict[str, float]:
+    completeness = (
+        available / expected
+        if expected
+        else 0.0
+    )
+
+    raw = (
+        sum(scores) / len(scores)
+        if scores
+        else 0.0
+    )
+
+    cautious = raw * completeness
+
+    return {
+        "group": group,
+        "available": available,
+        "expected": expected,
+        "completeness": completeness,
+        "score_raw": raw,
+        "score_cautious": cautious,
+        "weight": GROUP_WEIGHTS[group],
+    }
+
+
+def build_html(
+    ranking: list[dict[str, Any]],
+    excluded: list[dict[str, Any]],
+    groups: list[dict[str, Any]],
+    components: list[dict[str, Any]],
+) -> str:
+    ranked_rows = []
+
+    for row in ranking:
+        ranked_rows.append(
+            "<tr>"
+            f"<td>{row['place']}</td>"
+            f"<td>{html.escape(row['name_pl'])}</td>"
+            f"<td>{html.escape(row['category'])}</td>"
+            f"<td>{row['score_cautious']:.2f}</td>"
+            f"<td>{row['completeness_percent']:.1f}%</td>"
+            f"<td>{html.escape(row['status'])}</td>"
+            "</tr>"
+        )
+
+    excluded_rows = []
+
+    for row in excluded:
+        excluded_rows.append(
+            "<tr>"
+            f"<td>{html.escape(row['name_pl'])}</td>"
+            f"<td>{html.escape(row['category'])}</td>"
+            f"<td>{row['completeness_percent']:.1f}%</td>"
+            f"<td>{html.escape(row['status'])}</td>"
+            "</tr>"
+        )
+
+    group_rows = []
+
+    for row in groups:
+        group_rows.append(
+            "<tr>"
+            f"<td>{html.escape(row['name_pl'])}</td>"
+            f"<td>{html.escape(row['group'])}</td>"
+            f"<td>{row['available']}/{row['expected']}</td>"
+            f"<td>{row['completeness'] * 100:.1f}%</td>"
+            f"<td>{row['score_raw']:.2f}</td>"
+            f"<td>{row['score_cautious']:.2f}</td>"
+            "</tr>"
+        )
+
+    component_rows = []
+
+    for row in components:
+        value = (
+            "—"
+            if row["value"] == ""
+            else f"{float(row['value']):.4g}"
+        )
+
+        points = (
+            "—"
+            if row["weighted_score"] == ""
+            else f"{float(row['weighted_score']):.2f}"
+        )
+
+        component_rows.append(
+            "<tr>"
+            f"<td>{html.escape(row['name_pl'])}</td>"
+            f"<td>{html.escape(row['nutrient_name'])}</td>"
+            f"<td>{value}</td>"
+            f"<td>{html.escape(row['unit'])}</td>"
+            f"<td>{points}</td>"
+            f"<td>{html.escape(row['data_status'])}</td>"
+            "</tr>"
+        )
+
+    return f"""<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Indeks żywności — pilot v2.1</title>
+  <style>
+    body {{
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 18px;
+      font-family: system-ui, sans-serif;
+      color: #20251f;
+      background: #f3f5ef;
+    }}
+    h1, h2 {{ color: #274e13; }}
+    .box {{
+      margin: 22px 0;
+      padding: 22px;
+      overflow-x: auto;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px #0001;
+    }}
+    .pilot {{
+      display: inline-block;
+      padding: 7px 12px;
+      background: #fff2cc;
+      border-radius: 999px;
+      font-weight: 700;
+    }}
+    .good {{
+      padding: 14px;
+      border-left: 5px solid #38761d;
+      background: #eaf4e4;
+    }}
+    .warning {{
+      padding: 14px;
+      border-left: 5px solid #bf9000;
+      background: #fff8dd;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+    }}
+    th, td {{
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }}
+    th {{ background: #d9ead3; }}
+  </style>
+</head>
+<body>
+  <span class="pilot">PILOT v2.1 PO AUDYCIE</span>
+  <h1>Indeks żywności Kogucia Łączka</h1>
+
+  <div class="good">
+    Brak danych nie jest zerem. Produkty z kompletnością
+    poniżej 60% nie otrzymują miejsca w rankingu.
+  </div>
+
+  <div class="warning">
+    AAS opisuje profil aminokwasów, ale bez danych
+    strawności nie jest DIAAS. Wyniki pozostają pilotażowe.
+  </div>
+
+  <section class="box">
+    <h2>Ranking zakwalifikowanych produktów</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Miejsce</th>
+          <th>Produkt</th>
+          <th>Kategoria</th>
+          <th>Wynik</th>
+          <th>Kompletność</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>{''.join(ranked_rows)}</tbody>
+    </table>
+  </section>
+
+  <section class="box">
+    <h2>Produkty poza rankingiem</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Kategoria</th>
+          <th>Kompletność</th>
+          <th>Powód</th>
+        </tr>
+      </thead>
+      <tbody>{''.join(excluded_rows)}</tbody>
+    </table>
+  </section>
+
+  <section class="box">
+    <h2>Wyniki według grup</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Grupa</th>
+          <th>Dane</th>
+          <th>Kompletność</th>
+          <th>Wynik surowy</th>
+          <th>Wynik ostrożnościowy</th>
+        </tr>
+      </thead>
+      <tbody>{''.join(group_rows)}</tbody>
+    </table>
+  </section>
+
+  <section class="box">
+    <h2>Pełny rozkład składników</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Składnik</th>
+          <th>Wartość/100 g</th>
+          <th>Jednostka</th>
+          <th>Punkty</th>
+          <th>Status danych</th>
+        </tr>
+      </thead>
+      <tbody>{''.join(component_rows)}</tbody>
+    </table>
+  </section>
+
+  <section class="box">
+    <h2>Metodologia</h2>
+    <p>Wersja: {VERSION}</p>
+    <p>60% wyniku na 100 g i 40% na 100 kcal.</p>
+    <p>
+      Wagi grup: minerały 30%, witaminy 30%,
+      białko 20%, kwasy tłuszczowe 10%,
+      błonnik i składniki funkcjonalne 10%.
+    </p>
+  </section>
+</body>
+</html>
+"""
+
+
+def main() -> None:
+    api_key = os.environ.get(
+        "USDA_API_KEY",
+        ""
+    ).strip()
+
+    if not api_key:
+        raise SystemExit(
+            "BŁĄD: Brakuje sekretu USDA_API_KEY."
+        )
+
+    methodology = read_json(
+        CONFIG / "methodology-v21.json"
+    )
+
+    if methodology["version"] != VERSION:
+        raise RuntimeError(
+            "Niezgodna wersja metodologii."
+        )
+
+    if not math.isclose(
+        sum(GROUP_WEIGHTS.values()),
+        1.0,
+        abs_tol=1e-9,
+    ):
+        raise RuntimeError(
+            "Wagi grup nie sumują się do 1."
+        )
+
+    catalog = read_catalog()
+
+    if len(catalog) != 7:
+        raise RuntimeError(
+            f"Pilot wymaga 7 produktów; jest {len(catalog)}."
+        )
+
+    ids = [
+        row["product_id"]
+        for row in catalog
+    ]
+
+    fdc_ids = [
+        row["fdc_id"]
+        for row in catalog
+    ]
+
+    if len(ids) != len(set(ids)):
+        raise RuntimeError(
+            "Duplikat product_id."
+        )
+
+    if len(fdc_ids) != len(set(fdc_ids)):
+        raise RuntimeError(
+            "Duplikat FDC ID."
+        )
+
+    session = requests.Session()
+    session.headers.update(
+        {
+            "User-Agent":
+                "KoguciaLaczka-IndeksZywnosci/2.1"
+        }
+    )
+
+    products = []
+    components = []
+    group_results = []
+    exceptions = []
+
+    for catalog_row in catalog:
+        product_id = catalog_row["product_id"]
+        fdc_id = catalog_row["fdc_id"]
+
+        print(
+            f"Pobieranie {product_id}, FDC {fdc_id}"
+        )
+
+        try:
+            food = base.fetch_food(
+                session,
+                api_key,
+                fdc_id,
+            )
+        except Exception as error:
+            exceptions.append(
+                {
+                    "product_id": product_id,
+                    "severity": "critical",
+                    "code": "usda_fetch_failed",
+                    "message": str(error),
+                }
+            )
+            continue
+
+        base.write_json(
+            DATA / "raw" / f"{fdc_id}.json",
+            food,
+        )
+
+        nutrient_rows = base.nutrient_rows(food)
+        energy_info = base.find_energy(nutrient_rows)
+
+        if energy_info is None:
+            exceptions.append(
+                {
+                    "product_id": product_id,
+                    "severity": "critical",
+                    "code": "missing_energy",
+                    "message":
+                        "Brak wiarygodnej energii kcal/100 g.",
+                }
+            )
+            continue
+
+        energy = float(energy_info["value"])
+
+        if not 1.0 <= energy <= 900.0:
+            raise RuntimeError(
+                f"Podejrzana energia {product_id}: "
+                f"{energy}"
+            )
+
+        scores_by_group = defaultdict(list)
+        available_by_group = defaultdict(int)
+        values = {}
+
+        for definition in NUTRIENTS:
+            found = base.find_nutrient(
+                nutrient_rows,
+                definition["fdc_ids"],
+                definition["unit"],
+            )
+
+            common = {
+                "product_id": product_id,
+                "name_pl": catalog_row["name_pl"],
+                "nutrient_key": definition["key"],
+                "nutrient_name": definition["name_pl"],
+                "group": definition["group"],
+                "unit": definition["unit"],
+                "reference": definition["reference"],
+                "reference_source":
+                    definition["reference_source"],
+                "source":
+                    f"USDA FDC {fdc_id}",
+            }
+
+            if found is None:
+                components.append(
+                    {
+                        **common,
+                        "value": "",
+                        "points_100g": "",
+                        "points_100kcal": "",
+                        "weighted_score": "",
+                        "data_status":
+                            "Brak danych — nie zero",
+                    }
+                )
+                continue
+
+            value = float(found["value"])
+
+            if not math.isfinite(value) or value < 0:
+                raise RuntimeError(
+                    f"Nieprawidłowa wartość "
+                    f"{product_id}/{definition['key']}"
+                )
+
+            p100g, p100kcal, combined = (
+                score_component(
+                    value,
+                    float(definition["reference"]),
+                    energy,
+                )
+            )
+
+            values[definition["key"]] = value
+
+            scores_by_group[
+                definition["group"]
+            ].append(combined)
+
+            available_by_group[
+                definition["group"]
+            ] += 1
+
+            components.append(
+                {
+                    **common,
+                    "value": value,
+                    "points_100g": p100g,
+                    "points_100kcal": p100kcal,
+                    "weighted_score": combined,
+                    "data_status":
+                        "USDA — wartość bezpośrednia",
+                }
+            )
+
+        protein_quantity_scores = (
+            scores_by_group[
+                "protein_and_amino_acids"
+            ]
+        )
+
+        protein_quantity = (
+            protein_quantity_scores[0]
+            if protein_quantity_scores
+            else 0.0
+        )
+
+        aas = base.amino_acid_score(
+            nutrient_rows,
+            values.get("protein"),
+        )
+
+        if aas is None:
+            protein_quality_factor = 1.0
+            protein_expected = 2
+            protein_available = (
+                1 if protein_quantity_scores else 0
+            )
+
+            components.append(
+                {
+                    "product_id": product_id,
+                    "name_pl": catalog_row["name_pl"],
+                    "nutrient_key": "amino_acid_score",
+                    "nutrient_name":
+                        "Amino Acid Score",
+                    "group":
+                        "protein_and_amino_acids",
+                    "value": "",
+                    "unit": "pkt",
+                    "reference": 100.0,
+                    "reference_source":
+                        "FAO; profil bez korekty strawności",
+                    "points_100g": "",
+                    "points_100kcal": "",
+                    "weighted_score": "",
+                    "data_status":
+                        "Brak pełnego profilu; nie DIAAS",
+                    "source":
+                        f"USDA FDC {fdc_id} / FAO",
+                }
+            )
+        else:
+            protein_quality_factor = min(
+                float(aas["score"]) / 100.0,
+                1.0,
+            )
+            protein_expected = 2
+            protein_available = 2
+
+            components.append(
+                {
+                    "product_id": product_id,
+                    "name_pl": catalog_row["name_pl"],
+                    "nutrient_key": "amino_acid_score",
+                    "nutrient_name":
+                        "Amino Acid Score",
+                    "group":
+                        "protein_and_amino_acids",
+                    "value": float(aas["score"]),
+                    "unit": "pkt",
+                    "reference": 100.0,
+                    "reference_source":
+                        "FAO; profil bez korekty strawności",
+                    "points_100g":
+                        min(float(aas["score"]), 100.0),
+                    "points_100kcal":
+                        min(float(aas["score"]), 100.0),
+                    "weighted_score":
+                        min(float(aas["score"]), 100.0),
+                    "data_status":
+                        "Obliczono AAS; to nie DIAAS",
+                    "source":
+                        f"USDA FDC {fdc_id} / FAO",
+                }
+            )
+
+        protein_raw = (
+            protein_quantity
+            * protein_quality_factor
+        )
+
+        protein_completeness = (
+            protein_available / protein_expected
+        )
+
+        protein_group = {
+            "group":
+                "protein_and_amino_acids",
+            "available": protein_available,
+            "expected": protein_expected,
+            "completeness":
+                protein_completeness,
+            "score_raw": protein_raw,
+            "score_cautious":
+                protein_raw
+                * protein_completeness,
+            "weight":
+                GROUP_WEIGHTS[
+                    "protein_and_amino_acids"
+                ],
+        }
+
+        product_groups = []
+
+        for group in GROUP_WEIGHTS:
+            if group == "protein_and_amino_acids":
+                result = protein_group
+            else:
+                expected = len(
+                    DEFINITIONS_BY_GROUP[group]
+                )
+                available = available_by_group[group]
+                scores = scores_by_group[group]
+
+                result = calculate_group(
+                    group,
+                    scores,
+                    available,
+                    expected,
+                )
+
+            result = {
+                **result,
+                "product_id": product_id,
+                "name_pl": catalog_row["name_pl"],
+            }
+
+            product_groups.append(result)
+            group_results.append(result)
+
+        weighted_completeness = sum(
+            row["completeness"]
+            * row["weight"]
+            for row in product_groups
+        )
+
+        score_raw = sum(
+            row["score_raw"]
+            * row["weight"]
+            for row in product_groups
+        )
+
+        score_cautious = sum(
+            row["score_cautious"]
+            * row["weight"]
+            for row in product_groups
+        )
+
+        if not (
+            math.isfinite(score_raw)
+            and math.isfinite(score_cautious)
+        ):
+            raise RuntimeError(
+                f"Wynik nie jest skończony: {product_id}"
+            )
+
+        if not (
+            0.0 <= score_raw <= CAP
+            and 0.0 <= score_cautious <= CAP
+        ):
+            raise RuntimeError(
+                f"Wynik poza zakresem: {product_id}"
+            )
+
+        products.append(
+            {
+                "product_id": product_id,
+                "name_pl": catalog_row["name_pl"],
+                "fdc_id": fdc_id,
+                "fdc_url":
+                    "https://fdc.nal.usda.gov/"
+                    f"food-details/{fdc_id}/nutrients",
+                "fdc_description":
+                    food.get("description", ""),
+                "data_type":
+                    food.get("dataType", ""),
+                "category": catalog_row["category"],
+                "state": catalog_row["state"],
+                "energy_kcal_100g": energy,
+                "energy_source":
+                    energy_info["source"],
+                "score_raw": score_raw,
+                "score_cautious": score_cautious,
+                "weighted_completeness":
+                    weighted_completeness,
+                "completeness_percent":
+                    weighted_completeness * 100.0,
+                "status":
+                    status_for(weighted_completeness),
+                "qualified":
+                    weighted_completeness
+                    >= CONDITIONAL_MINIMUM,
+                "methodology_version": VERSION,
+            }
+        )
+
+        time.sleep(0.2)
+
+    critical = [
+        row
+        for row in exceptions
+        if row["severity"] == "critical"
+    ]
+
+    if critical:
+        raise RuntimeError(
+            "Krytyczne wyjątki: "
+            + " | ".join(
+                row["product_id"]
+                + ": "
+                + row["message"]
+                for row in critical
+            )
+        )
+
+    if len(products) != 7:
+        raise RuntimeError(
+            f"Przetworzono {len(products)}/7 produktów."
+        )
+
+    qualified = sorted(
+        [
+            row for row in products
+            if row["qualified"]
+        ],
+        key=lambda row: row["score_cautious"],
+        reverse=True,
+    )
+
+    excluded = sorted(
+        [
+            row for row in products
+            if not row["qualified"]
+        ],
+        key=lambda row: row["completeness_percent"],
+        reverse=True,
+    )
+
+    for place, row in enumerate(
+        qualified,
+        start=1,
+    ):
+        row["place"] = place
+
+    for row in excluded:
+        row["place"] = ""
+
+    all_products = qualified + excluded
+
+    product_columns = [
+        "place",
+        "product_id",
+        "name_pl",
+        "category",
+        "state",
+        "fdc_id",
+        "fdc_url",
+        "fdc_description",
+        "data_type",
+        "energy_kcal_100g",
+        "energy_source",
+        "score_raw",
+        "score_cautious",
+        "weighted_completeness",
+        "completeness_percent",
+        "status",
+        "qualified",
+        "methodology_version",
+    ]
+
+    component_columns = [
+        "product_id",
+        "name_pl",
+        "nutrient_key",
+        "nutrient_name",
+        "group",
+        "value",
+        "unit",
+        "reference",
+        "reference_source",
+        "points_100g",
+        "points_100kcal",
+        "weighted_score",
+        "data_status",
+        "source",
+    ]
+
+    group_columns = [
+        "product_id",
+        "name_pl",
+        "group",
+        "available",
+        "expected",
+        "completeness",
+        "score_raw",
+        "score_cautious",
+        "weight",
+    ]
+
+    exception_columns = [
+        "product_id",
+        "severity",
+        "code",
+        "message",
+    ]
+
+    write_csv(
+        DATA / "results" / "ranking-v21.csv",
+        all_products,
+        product_columns,
+    )
+
+    write_csv(
+        DATA / "results" / "components-v21.csv",
+        components,
+        component_columns,
+    )
+
+    write_csv(
+        DATA / "results" / "group-scores-v21.csv",
+        group_results,
+        group_columns,
+    )
+
+    write_csv(
+        DATA / "results" / "exceptions-v21.csv",
+        exceptions,
+        exception_columns,
+    )
+
+    write_json(
+        PUBLIC / "data" / "ranking-v21.json",
+        all_products,
+    )
+
+    write_json(
+        PUBLIC / "data" / "components-v21.json",
+        components,
+    )
+
+    write_json(
+        PUBLIC / "data" / "group-scores-v21.json",
+        group_results,
+    )
+
+    write_json(
+        PUBLIC / "data" / "methodology-v21.json",
+        methodology,
+    )
+
+    page = build_html(
+        qualified,
+        excluded,
+        group_results,
+        components,
+    )
+
+    (PUBLIC / "index.html").write_text(
+        page,
+        encoding="utf-8",
+    )
+
+    base.security_check(api_key)
+
+    print("")
+    print("========================================")
+    print("PILOT METODOLOGII V2.1 ZAKOŃCZONY")
+    print("Produkty:", len(products))
+    print("Zakwalifikowane:", len(qualified))
+    print("Poza rankingiem:", len(excluded))
+    print("Komponenty:", len(components))
+    print("Krytyczne wyjątki:", len(critical))
+    print("Klucz USDA w plikach: 0")
+    print("========================================")
+
+    for row in qualified:
+        print(
+            row["place"],
+            row["name_pl"],
+            round(row["score_cautious"], 2),
+            round(row["completeness_percent"], 1),
+        )
+
+    for row in excluded:
+        print(
+            "POZA RANKINGIEM",
+            row["name_pl"],
+            round(row["completeness_percent"], 1),
+        )
+
+
+if __name__ == "__main__":
+    main()
