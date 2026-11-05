@@ -1,0 +1,10 @@
+{
+  "methodology_version": "2.5.0-economy-pilot",
+  "calculation_date": "2026-11-05",
+  "products_total": 30,
+  "products_qualified": 4,
+  "products_without_current_price": 26,
+  "user_prices_used": 0,
+  "reference_prices_used": 4,
+  "exceptions": 26
+}

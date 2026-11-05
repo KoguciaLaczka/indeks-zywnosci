@@ -1,0 +1,27 @@
+﻿product_id,name_pl,severity,code,message
+SUNFLOWER-SEEDS,Kernele słonecznika suszone,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+FLAXSEED,Siemię lniane,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+SARDINE-CANNED,Sardynki w oleju z ośćmi,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+PUMPKIN-SEEDS,Kernele pestek dyni suszone,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+SPINACH-RAW,Szpinak surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+ALMONDS-RAW,Migdały nieprażone,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+KALE-RAW,Jarmuż surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+WALNUTS-RAW,Orzechy włoskie,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+COD-PACIFIC-RAW,Dorsz pacyficzny surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+BROCCOLI-RAW,Brokuł surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+EGG-WHOLE-RAW,Jajo kurze całe surowe,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+CHEESE-CHEDDAR,Ser cheddar,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+LENTILS-COOKED,Soczewica gotowana bez soli,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+CAULIFLOWER-RAW,Kalafior surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+CARROT-RAW,Marchew surowa,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+AVOCADO-RAW,Awokado surowe,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+POTATO-BAKED,Ziemniak pieczony ze skórką,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+MILK-WHOLE,Mleko pełne 3.25%,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+BANANA-RAW,Banan surowy,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+BLUEBERRIES-RAW,Borówki surowe,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.
+APPLE-RAW-SKIN,Jabłko surowe ze skórką,info,MISSING_PRICE,Brak aktywnej ceny użytkownika i ceny referencyjnej.

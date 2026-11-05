@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Indeks żywności — wartość za 1 zł</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --green: #275d38;
+      --light: #eef5ed;
+      --border: #d7dfd5;
+      --warning: #fff4d6;
+    }
+    body {
+      max-width: 1500px;
+      margin: 30px auto;
+      padding: 18px;
+      font-family: system-ui, sans-serif;
+      color: #20251f;
+      background: #f3f5ef;
+    }
+    h1, h2 {
+      color: var(--green);
+    }
+    .box {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px #0001;
+      overflow-x: auto;
+    }
+    .warning {
+      padding: 16px;
+      border-left: 5px solid #c58b00;
+      background: var(--warning);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      background: var(--light);
+      position: sticky;
+      top: 0;
+    }
+    a {
+      color: var(--green);
+    }
+    .metric {
+      display: inline-block;
+      margin: 6px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: var(--light);
+    }
+    code {
+      background: #eef0ec;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wartość odżywcza za 1 zł</h1>
+
+  <section class="warning">
+    <strong>Pilot ekonomiczny.</strong>
+    Wynik zależy od ceny, daty, gramatury porcji i stanu produktu.
+    Brak ceny nie jest traktowany jako cena zerowa. Ranking cenowy
+    nie oznacza automatycznie najlepszego produktu dla konkretnej osoby.
+  </section>
+
+  <section class="box">
+    <span class="metric">
+      Produkty ogółem: <strong>30</strong>
+    </span>
+    <span class="metric">
+      Z aktualną ceną: <strong>4</strong>
+    </span>
+    <span class="metric">
+      Bez kwalifikacji cenowej:
+      <strong>26</strong>
+    </span>
+    <p>Data obliczenia: <strong>2026-11-05</strong></p>
+    <p>Metodologia: <strong>2.5.0-economy-pilot</strong></p>
+  </section>
+
+  <section class="box">
+    <h2>Ranking porcji za 1 zł</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Miejsce</th>
+          <th>Produkt</th>
+          <th>Cena zł/kg</th>
+          <th>Porcja g</th>
+          <th>Koszt porcji</th>
+          <th>Punkty porcji</th>
+          <th>Punkty za 1 zł</th>
+          <th>Typ ceny</th>
+          <th>Data ceny</th>
+          <th>Źródło</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Wątroba wołowa surowa</td><td>22.00</td><td>100</td><td>2.20</td><td>40.81</td><td><strong>18.55</strong></td><td>REFERENCE</td><td>2026-09-26</td><td><a href="https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&amp;sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82" target="_blank" rel="noopener">źródło</a></td></tr>
+<tr><td>2</td><td>Nerki wołowe surowe</td><td>19.00</td><td>100</td><td>1.90</td><td>26.06</td><td><strong>13.72</strong></td><td>REFERENCE</td><td>2026-09-26</td><td><a href="https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&amp;sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82" target="_blank" rel="noopener">źródło</a></td></tr>
+<tr><td>3</td><td>Serce wołowe surowe</td><td>33.00</td><td>150</td><td>4.95</td><td>23.83</td><td><strong>4.81</strong></td><td>REFERENCE</td><td>2026-09-26</td><td><a href="https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&amp;sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82" target="_blank" rel="noopener">źródło</a></td></tr>
+<tr><td>4</td><td>Wołowina mielona 90/10 surowa</td><td>70.00</td><td>150</td><td>10.50</td><td>23.53</td><td><strong>2.24</strong></td><td>REFERENCE</td><td>2026-09-26</td><td><a href="https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&amp;sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82" target="_blank" rel="noopener">źródło</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="box">
+    <h2>Status cen</h2>
+    <ul><li><strong>CURRENT</strong>: 4</li><li><strong>MISSING_PRICE</strong>: 26</li></ul>
+    <p>
+      Ceny użytkownika są ważne przez
+      <strong>45 dni</strong>,
+      a referencyjne przez
+      <strong>90 dni</strong>.
+    </p>
+  </section>
+
+  <section class="box">
+    <h2>Jak czytać wynik?</h2>
+    <ul>
+      <li>Wynik bazowy pozostaje niezależny od ceny.</li>
+      <li>Cena nie wpływa na ocenę odżywczą produktu.</li>
+      <li>
+        Ranking ekonomiczny jest jedynie ilorazem punktów i kosztu.
+      </li>
+      <li>
+        Produkty bez aktualnej ceny pozostają widoczne w raporcie,
+        ale nie otrzymują miejsca ekonomicznego.
+      </li>
+    </ul>
+    <p>
+      <a href="portion.html">Ranking praktycznej porcji</a>
+      ·
+      <a href="index.html">Ranking składu odżywczego</a>
+    </p>
+  </section>
+</body>
+</html>

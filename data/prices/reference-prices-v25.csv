@@ -1,0 +1,31 @@
+﻿product_id,name_pl,price_pln_per_kg,observed_at,source_label,source_url,confidence,note,active
+BEEF-LIVER-RAW,Wątroba wołowa surowa,22.00,2026-09-26,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Średnia,Cena odzyskana ze starego publicznego rankingu.,TAK
+SUNFLOWER-SEEDS,Kernele słonecznika suszone,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+FLAXSEED,Siemię lniane,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+SARDINE-CANNED,Sardynki w oleju z ośćmi,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+PUMPKIN-SEEDS,Kernele pestek dyni suszone,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+SPINACH-RAW,Szpinak surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+BEEF-KIDNEY-RAW,Nerki wołowe surowe,19.00,2026-09-26,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Wysoka,Cena odzyskana ze starego publicznego rankingu.,TAK
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+ALMONDS-RAW,Migdały nieprażone,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+KALE-RAW,Jarmuż surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+WALNUTS-RAW,Orzechy włoskie,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+COD-PACIFIC-RAW,Dorsz pacyficzny surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+BROCCOLI-RAW,Brokuł surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+BEEF-HEART-RAW,Serce wołowe surowe,33.00,2026-09-26,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Średnia,Cena odzyskana ze starego publicznego rankingu.,TAK
+EGG-WHOLE-RAW,Jajo kurze całe surowe,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+CHEESE-CHEDDAR,Ser cheddar,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+LENTILS-COOKED,Soczewica gotowana bez soli,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+CAULIFLOWER-RAW,Kalafior surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,70.00,2026-09-26,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Średnia,Cena odzyskana ze starego publicznego rankingu.,TAK
+KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+CARROT-RAW,Marchew surowa,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+AVOCADO-RAW,Awokado surowe,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+POTATO-BAKED,Ziemniak pieczony ze skórką,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+MILK-WHOLE,Mleko pełne 3.25%,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+BANANA-RAW,Banan surowy,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+BLUEBERRIES-RAW,Borówki surowe,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE
+APPLE-RAW-SKIN,Jabłko surowe ze skórką,,,,,,Brak zatwierdzonej ceny referencyjnej.,NIE

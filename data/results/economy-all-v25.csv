@@ -1,0 +1,31 @@
+﻿economic_place,product_id,name_pl,category,state,core_place,core_score,portion_place,portion_g,portion_score,price_pln_per_kg,cost_100g_pln,cost_portion_pln,core_points_per_pln_100g,portion_points_per_pln,price_type,price_date,price_age_days,price_confidence,price_source_label,price_source_url,price_note,price_status,qualified,methodology_version
+1,BEEF-LIVER-RAW,Wątroba wołowa surowa,Podroby,Surowy,1,38.027254,1,100,40.812353,22,2.2,2.2,17.285115,18.551069,REFERENCE,2026-09-26,40,Średnia,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Cena odzyskana ze starego publicznego rankingu.,CURRENT,TAK,2.5.0-economy-pilot
+2,BEEF-KIDNEY-RAW,Nerki wołowe surowe,Podroby,Surowy,7,26.131603,6,100,26.06483,19,1.9,1.9,13.753475,13.718331,REFERENCE,2026-09-26,40,Wysoka,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Cena odzyskana ze starego publicznego rankingu.,CURRENT,TAK,2.5.0-economy-pilot
+3,BEEF-HEART-RAW,Serce wołowe surowe,Podroby,Surowy,14,16.205392,8,150,23.825901,33,3.3,4.95,4.910725,4.813313,REFERENCE,2026-09-26,40,Średnia,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Cena odzyskana ze starego publicznego rankingu.,CURRENT,TAK,2.5.0-economy-pilot
+4,BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,Mięso czerwone,Surowy,20,13.139351,9,150,23.533329,70,7,10.5,1.87705,2.241269,REFERENCE,2026-09-26,40,Średnia,Publiczny ranking legacy v1.2,https://docs.google.com/spreadsheets/d/1qk2fmRIPISVUrciSM2iPEm-hvuf0X17yBb62kTSQzcM/gviz/tq?tqx=out:csv&sheet=Warto%C5%9B%C4%87%20za%201%20z%C5%82,Cena odzyskana ze starego publicznego rankingu.,CURRENT,TAK,2.5.0-economy-pilot
+,AVOCADO-RAW,Awokado surowe,Owoce,Surowy,23,9.126921,21,100,10.737554,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,BANANA-RAW,Banan surowy,Owoce,Surowy,28,5.026357,27,120,5.747483,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,BLUEBERRIES-RAW,Borówki surowe,Owoce,Surowy,29,4.774304,29,125,4.58449,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,BROCCOLI-RAW,Brokuł surowy,Warzywa,Surowy,13,16.28476,14,150,14.711699,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,Strączki,Gotowany,18,13.797221,4,180,28.625678,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,COD-PACIFIC-RAW,Dorsz pacyficzny surowy,Ryby,Surowy,12,18.285131,10,150,23.249522,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,Strączki,Gotowany,21,12.649788,7,180,24.8859,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,APPLE-RAW-SKIN,Jabłko surowe ze skórką,Owoce,Surowy,30,2.408934,30,180,3.330952,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,EGG-WHOLE-RAW,Jajo kurze całe surowe,Jaja,Surowy,15,15.467148,24,50,8.790947,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,KALE-RAW,Jarmuż surowy,Warzywa,Surowy,10,23.223251,13,100,15.723723,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,Nabiał,Gotowy,27,5.154474,25,200,8.209475,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,CAULIFLOWER-RAW,Kalafior surowy,Warzywa,Surowy,19,13.653743,15,200,13.41634,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,PUMPKIN-SEEDS,Kernele pestek dyni suszone,Nasiona,Suszony,5,29.31601,12,30,15.77633,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,SUNFLOWER-SEEDS,Kernele słonecznika suszone,Nasiona,Suszony,2,32.961412,11,30,17.432122,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,CARROT-RAW,Marchew surowa,Warzywa,Surowy,22,9.945119,23,150,9.806729,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,ALMONDS-RAW,Migdały nieprażone,Orzechy,Nieprzetworzony,9,24.151376,19,30,11.534067,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,MILK-WHOLE,Mleko pełne 3.25%,Nabiał,Płynny,26,5.356949,22,250,10.664944,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,WALNUTS-RAW,Orzechy włoskie,Orzechy,Nieprzetworzony,11,18.684798,20,30,11.174855,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,Zboża,Gotowany,25,6.073538,16,250,13.051489,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,SARDINE-CANNED,Sardynki w oleju z ośćmi,Ryby,Konserwowany,4,29.409777,3,100,34.820406,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,CHEESE-CHEDDAR,Ser cheddar,Nabiał,Gotowy,16,15.292388,26,30,6.560858,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,FLAXSEED,Siemię lniane,Nasiona,Nieprzetworzony,3,32.040099,28,10,4.825844,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,LENTILS-COOKED,Soczewica gotowana bez soli,Strączki,Gotowany,17,14.236078,5,180,26.131287,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,SPINACH-RAW,Szpinak surowy,Warzywa,Surowy,6,27.710864,17,75,12.481643,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,POTATO-BAKED,Ziemniak pieczony ze skórką,Warzywa,Pieczony,24,6.386686,18,200,12.400038,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
+,SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,Ryby,Surowy,8,25.071736,2,150,38.419978,,,,,,,,,,,,,MISSING_PRICE,NIE,2.5.0-economy-pilot
