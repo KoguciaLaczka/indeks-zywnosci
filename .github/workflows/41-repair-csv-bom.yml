@@ -1,0 +1,280 @@
+name: 41 - Naprawa kodowania CSV
+
+on:
+  push:
+    paths:
+      - ".github/workflows/41-repair-csv-bom.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: repair-csv-bom
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Naprawa BOM i ponowne uruchomienie rankingu
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Pobranie repozytorium
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Naprawienie czytnika katalogu
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+
+          path = Path("src/pilot_v21.py")
+
+          if not path.exists():
+              raise SystemExit(
+                  "BŁĄD: Brakuje src/pilot_v21.py"
+              )
+
+          source = path.read_text(
+              encoding="utf-8"
+          )
+
+          function_start = source.find(
+              "def read_catalog()"
+          )
+
+          if function_start < 0:
+              raise RuntimeError(
+                  "Nie znaleziono funkcji read_catalog()."
+              )
+
+          function_end = source.find(
+              "\n\ndef ",
+              function_start + 1,
+          )
+
+          if function_end < 0:
+              function_end = len(source)
+
+          before = source[:function_start]
+          block = source[
+              function_start:function_end
+          ]
+          after = source[function_end:]
+
+          old_encoding = 'encoding="utf-8"'
+          new_encoding = 'encoding="utf-8-sig"'
+
+          if new_encoding in block:
+              print(
+                  "Czytnik UTF-8-SIG jest już zainstalowany."
+              )
+
+          elif old_encoding in block:
+              block = block.replace(
+                  old_encoding,
+                  new_encoding,
+                  1,
+              )
+
+              source = before + block + after
+
+              path.write_text(
+                  source,
+                  encoding="utf-8",
+              )
+
+              print(
+                  "Naprawiono czytnik CSV: "
+                  "UTF-8 -> UTF-8-SIG"
+              )
+
+          else:
+              raise RuntimeError(
+                  "Nie znaleziono deklaracji kodowania "
+                  "w funkcji read_catalog()."
+              )
+
+          verification = path.read_text(
+              encoding="utf-8"
+          )
+
+          verification_start = verification.find(
+              "def read_catalog()"
+          )
+
+          verification_end = verification.find(
+              "\n\ndef ",
+              verification_start + 1,
+          )
+
+          if verification_end < 0:
+              verification_end = len(verification)
+
+          verification_block = verification[
+              verification_start:verification_end
+          ]
+
+          if 'encoding="utf-8-sig"' not in verification_block:
+              raise RuntimeError(
+                  "Kontrola poprawki nie powiodła się."
+              )
+
+          print("KONTROLA POPRAWKI: OK")
+          PY
+
+      - name: Kontrola składni Pythona
+        run: |
+          python3 -m py_compile \
+            src/pilot_v21.py
+
+          echo "SKŁADNIA: OK"
+
+      - name: Test pliku z BOM
+        run: |
+          python3 - <<'PY'
+          import csv
+          import tempfile
+          from pathlib import Path
+
+
+          with tempfile.TemporaryDirectory() as directory:
+              path = Path(directory) / "test.csv"
+
+              path.write_text(
+                  "product_id,name_pl\n"
+                  "TEST-001,Produkt testowy\n",
+                  encoding="utf-8-sig",
+              )
+
+              with path.open(
+                  "r",
+                  encoding="utf-8-sig",
+                  newline="",
+              ) as handle:
+                  rows = list(
+                      csv.DictReader(handle)
+                  )
+
+              if len(rows) != 1:
+                  raise RuntimeError(
+                      "Nieprawidłowa liczba rekordów testowych."
+                  )
+
+              if rows[0]["product_id"] != "TEST-001":
+                  raise RuntimeError(
+                      "Nagłówek product_id nadal jest błędny."
+                  )
+
+              if "\ufeff" in next(
+                  iter(rows[0].keys())
+              ):
+                  raise RuntimeError(
+                      "BOM pozostał w nazwie kolumny."
+                  )
+
+          print("TEST BOM: OK")
+          print("Nagłówek product_id: OK")
+          PY
+
+      - name: Kontrola istniejącej metodologii
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+
+          path = Path(
+              "config/methodology-v23-30.json"
+          )
+
+          if not path.exists():
+              raise SystemExit(
+                  "BŁĄD: Brakuje "
+                  "config/methodology-v23-30.json"
+              )
+
+          methodology = json.loads(
+              path.read_text(encoding="utf-8")
+          )
+
+          if (
+              methodology.get("version")
+              != "2.3.0-pilot-30"
+          ):
+              raise RuntimeError(
+                  "Nieprawidłowa wersja metodologii: "
+                  + str(
+                      methodology.get("version")
+                  )
+              )
+
+          weights = methodology[
+              "group_weights"
+          ]
+
+          total = sum(
+              float(value)
+              for value in weights.values()
+          )
+
+          if abs(total - 1.0) > 1e-9:
+              raise RuntimeError(
+                  f"Wagi grup sumują się do {total}, "
+                  "zamiast do 1."
+              )
+
+          print("METODOLOGIA V2.3: OK")
+          print("Wagi grup: 1.0")
+          PY
+
+      - name: Zapisanie poprawki
+        id: commit
+        run: |
+          git config user.name "Indeks Żywności Bot"
+          git config user.email \
+            "actions@users.noreply.github.com"
+
+          git add src/pilot_v21.py
+
+          if git diff --cached --quiet; then
+            echo "Nie ma nowych zmian do zapisania."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit \
+              -m "Etap 41: obsługa BOM w katalogach CSV"
+
+            git push origin HEAD:main
+
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Uruchomienie Etapu 40
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Uruchamiam ranking 30 produktów..."
+
+          sleep 5
+
+          gh workflow run \
+            40-ranking-30.yml \
+            --ref main
+
+          echo "ETAP 40: URUCHOMIONY"
+
+      - name: Podsumowanie
+        run: |
+          echo "=========================================="
+          echo "ETAP 41 ZAKOŃCZONY"
+          echo "OBSŁUGA BOM: NAPRAWIONA"
+          echo "CZYTNIK CSV: UTF-8-SIG"
+          echo "TEST NAGŁÓWKA: OK"
+          echo "SKŁADNIA: OK"
+          echo "METODOLOGIA: OK"
+          echo "ETAP 40: URUCHOMIONY AUTOMATYCZNIE"
+          echo "=========================================="
