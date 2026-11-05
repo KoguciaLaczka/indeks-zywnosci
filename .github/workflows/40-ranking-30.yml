@@ -1,0 +1,899 @@
+name: 40 - Ranking pilotażowy 30 produktów
+
+on:
+  push:
+    paths:
+      - ".github/workflows/40-ranking-30.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ranking-pilot-30
+  cancel-in-progress: false
+
+jobs:
+  ranking:
+    name: Zamrożenie źródeł i ranking 30 produktów
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Pobranie repozytorium
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Przygotowanie środowiska
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "requests>=2.32,<3"
+
+          mkdir -p data/catalog
+          mkdir -p data/results
+          mkdir -p data/raw
+          mkdir -p public/data
+          mkdir -p src
+
+          test -f src/pilot_v2.py || {
+            echo "BŁĄD: Brakuje src/pilot_v2.py"
+            exit 1
+          }
+
+          test -f src/pilot_v21.py || {
+            echo "BŁĄD: Brakuje src/pilot_v21.py"
+            exit 1
+          }
+
+          test -f data/results/source-selection-30.csv || {
+            echo "BŁĄD: Brakuje raportu Etapu 31"
+            exit 1
+          }
+
+      - name: Zamrożenie źródeł 30 produktów
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import csv
+          import json
+          import os
+          import re
+          import time
+          import unicodedata
+          from pathlib import Path
+
+          import requests
+
+
+          INPUT = Path(
+              "data/results/source-selection-30.csv"
+          )
+
+          OUTPUT = Path(
+              "data/catalog/approved-products-30.csv"
+          )
+
+          RESOLUTIONS = Path(
+              "data/results/source-resolutions-30.csv"
+          )
+
+          API_URL = (
+              "https://api.nal.usda.gov/fdc/v1/food"
+          )
+
+          api_key = os.environ.get(
+              "USDA_API_KEY",
+              "",
+          ).strip()
+
+          if not api_key:
+              raise SystemExit(
+                  "BŁĄD: Brakuje USDA_API_KEY."
+              )
+
+
+          def normalize(value):
+              text = str(value or "").lower()
+
+              text = unicodedata.normalize(
+                  "NFKD",
+                  text,
+              )
+
+              text = "".join(
+                  character
+                  for character in text
+                  if not unicodedata.combining(character)
+              )
+
+              text = re.sub(
+                  r"[^a-z0-9]+",
+                  " ",
+                  text,
+              )
+
+              return re.sub(
+                  r"\s+",
+                  " ",
+                  text,
+              ).strip()
+
+
+          overrides = {
+              "BEEF-GROUND-9010-RAW": {
+                  "fdc_id": "174030",
+                  "required": [
+                      "beef",
+                      "ground",
+                      "90",
+                      "lean",
+                      "raw",
+                  ],
+                  "reason":
+                      "Tożsamy rekord SR Legacy ma pełniejszy profil.",
+              },
+              "MILK-WHOLE": {
+                  "fdc_id": "172217",
+                  "required": [
+                      "milk",
+                      "whole",
+                      "3 25",
+                      "without added vitamin",
+                  ],
+                  "reason":
+                      "Mleko bez dodatkowej fortyfikacji A i D.",
+              },
+              "CHEESE-CHEDDAR": {
+                  "fdc_id": "173414",
+                  "required": [
+                      "cheese",
+                      "cheddar",
+                  ],
+                  "reason":
+                      "Zwykły cheddar zamiast odmiany sharp lub light.",
+              },
+              "CHICKPEAS-COOKED": {
+                  "fdc_id": "173757",
+                  "required": [
+                      "chickpeas",
+                      "cooked",
+                      "boiled",
+                      "without salt",
+                  ],
+                  "reason":
+                      "Gotowana ciecierzyca bez soli.",
+              },
+              "KIDNEY-BEANS-COOKED": {
+                  "fdc_id": "175194",
+                  "required": [
+                      "beans",
+                      "kidney",
+                      "red",
+                      "cooked",
+                      "without salt",
+                  ],
+                  "reason":
+                      "Czerwona fasola gotowana bez soli.",
+              },
+              "POTATO-BAKED": {
+                  "fdc_id": "170093",
+                  "required": [
+                      "potatoes",
+                      "baked",
+                      "flesh and skin",
+                      "without salt",
+                  ],
+                  "reason":
+                      "Ziemniak pieczony ze skórką bez soli.",
+              },
+          }
+
+          with INPUT.open(
+              "r",
+              encoding="utf-8-sig",
+              newline="",
+          ) as handle:
+              selected = list(
+                  csv.DictReader(handle)
+              )
+
+          if len(selected) != 30:
+              raise RuntimeError(
+                  f"Raport zawiera {len(selected)}/30 produktów."
+              )
+
+          session = requests.Session()
+          session.headers.update(
+              {
+                  "User-Agent":
+                      "KoguciaLaczka-IndeksZywnosci/2.3"
+              }
+          )
+
+
+          def fetch_food(fdc_id):
+              last_error = None
+
+              for attempt in range(1, 5):
+                  try:
+                      response = session.get(
+                          f"{API_URL}/{fdc_id}",
+                          params={"api_key": api_key},
+                          timeout=45,
+                      )
+
+                      response.raise_for_status()
+                      return response.json()
+
+                  except Exception as error:
+                      last_error = error
+
+                      if attempt < 4:
+                          time.sleep(2 ** attempt)
+
+              raise RuntimeError(
+                  f"FDC {fdc_id}: {last_error}"
+              )
+
+
+          approved = []
+          resolutions = []
+
+          for index, row in enumerate(
+              selected,
+              start=1,
+          ):
+              product_id = row["product_id"]
+
+              if product_id in overrides:
+                  decision = overrides[product_id]
+                  fdc_id = decision["fdc_id"]
+                  basis = "MANUAL_EXCEPTION_RESOLUTION"
+                  reason = decision["reason"]
+              else:
+                  fdc_id = row["selected_fdc_id"]
+                  basis = row["selection_status"]
+                  reason = row["selection_reason"]
+
+              if not fdc_id:
+                  raise RuntimeError(
+                      f"Brak zatwierdzonego FDC ID: {product_id}"
+                  )
+
+              food = fetch_food(fdc_id)
+
+              actual_id = str(
+                  food.get("fdcId", "")
+              )
+
+              description = str(
+                  food.get("description", "")
+              )
+
+              data_type = str(
+                  food.get("dataType", "")
+              )
+
+              if actual_id != str(fdc_id):
+                  raise RuntimeError(
+                      f"Niezgodny FDC ID dla {product_id}: "
+                      f"{actual_id} != {fdc_id}"
+                  )
+
+              if data_type not in {
+                  "Foundation",
+                  "SR Legacy",
+              }:
+                  raise RuntimeError(
+                      f"Niedozwolony typ danych dla "
+                      f"{product_id}: {data_type}"
+                  )
+
+              if product_id in overrides:
+                  normalized_description = normalize(
+                      description
+                  )
+
+                  missing_terms = [
+                      term
+                      for term in overrides[
+                          product_id
+                      ]["required"]
+                      if normalize(term)
+                      not in normalized_description
+                  ]
+
+                  if missing_terms:
+                      raise RuntimeError(
+                          f"Niezgodny produkt {product_id}; "
+                          f"brakuje: {missing_terms}; "
+                          f"opis: {description}"
+                      )
+
+              name_pl = row["name_pl"]
+
+              if product_id == "POTATO-BAKED":
+                  name_pl = (
+                      "Ziemniak pieczony ze skórką"
+                  )
+
+              approved.append(
+                  {
+                      "product_id": product_id,
+                      "name_pl": name_pl,
+                      "fdc_id": fdc_id,
+                      "category": row["category"],
+                      "state": row["state"],
+                      "status": "APPROVED",
+                      "selection_basis": basis,
+                      "usda_description": description,
+                      "data_type": data_type,
+                      "source_url":
+                          "https://fdc.nal.usda.gov/"
+                          f"food-details/{fdc_id}/nutrients",
+                  }
+              )
+
+              resolutions.append(
+                  {
+                      "product_id": product_id,
+                      "name_pl": name_pl,
+                      "old_fdc_id":
+                          row["selected_fdc_id"],
+                      "approved_fdc_id": fdc_id,
+                      "changed":
+                          str(
+                              row["selected_fdc_id"]
+                              != fdc_id
+                          ),
+                      "basis": basis,
+                      "reason": reason,
+                      "usda_description": description,
+                      "data_type": data_type,
+                  }
+              )
+
+              print(
+                  f"[{index}/30]",
+                  product_id,
+                  fdc_id,
+                  data_type,
+                  description,
+              )
+
+              time.sleep(0.10)
+
+          product_ids = [
+              row["product_id"]
+              for row in approved
+          ]
+
+          fdc_ids = [
+              row["fdc_id"]
+              for row in approved
+          ]
+
+          if len(product_ids) != len(set(product_ids)):
+              raise RuntimeError(
+                  "Duplikat product_id."
+              )
+
+          if len(fdc_ids) != len(set(fdc_ids)):
+              raise RuntimeError(
+                  "Duplikat FDC ID."
+              )
+
+          product_columns = [
+              "product_id",
+              "name_pl",
+              "fdc_id",
+              "category",
+              "state",
+              "status",
+              "selection_basis",
+              "usda_description",
+              "data_type",
+              "source_url",
+          ]
+
+          resolution_columns = [
+              "product_id",
+              "name_pl",
+              "old_fdc_id",
+              "approved_fdc_id",
+              "changed",
+              "basis",
+              "reason",
+              "usda_description",
+              "data_type",
+          ]
+
+          with OUTPUT.open(
+              "w",
+              encoding="utf-8-sig",
+              newline="",
+          ) as handle:
+              writer = csv.DictWriter(
+                  handle,
+                  fieldnames=product_columns,
+              )
+              writer.writeheader()
+              writer.writerows(approved)
+
+          with RESOLUTIONS.open(
+              "w",
+              encoding="utf-8-sig",
+              newline="",
+          ) as handle:
+              writer = csv.DictWriter(
+                  handle,
+                  fieldnames=resolution_columns,
+              )
+              writer.writeheader()
+              writer.writerows(resolutions)
+
+          Path(
+              "data/results/approved-products-30.json"
+          ).write_text(
+              json.dumps(
+                  approved,
+                  ensure_ascii=False,
+                  indent=2,
+              ),
+              encoding="utf-8",
+          )
+
+          changed = [
+              row
+              for row in resolutions
+              if row["changed"] == "True"
+          ]
+
+          print("")
+          print("ŹRÓDŁA ZAMROŻONE: 30/30")
+          print("Zmienione decyzje:", len(changed))
+          print("Duplikaty produktów: 0")
+          print("Duplikaty FDC ID: 0")
+          PY
+
+      - name: Utworzenie silnika rankingu 30 produktów
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+
+          source_path = Path(
+              "src/pilot_v21.py"
+          )
+
+          output_path = Path(
+              "src/ranking_v23_30.py"
+          )
+
+          source = source_path.read_text(
+              encoding="utf-8"
+          )
+
+          replacements = {
+              (
+                  'VERSION = "2.1.0-pilot"'
+              ): (
+                  'VERSION = "2.3.0-pilot-30"'
+              ),
+              (
+                  '/ "pilot-products-v21.csv"'
+              ): (
+                  '/ "approved-products-30.csv"'
+              ),
+              (
+                  "if len(catalog) != 7:"
+              ): (
+                  "if len(catalog) != 30:"
+              ),
+              (
+                  'f"Pilot wymaga 7 produktów; '
+                  'jest {len(catalog)}."'
+              ): (
+                  'f"Pilot wymaga 30 produktów; '
+                  'jest {len(catalog)}."'
+              ),
+              (
+                  "if len(products) != 7:"
+              ): (
+                  "if len(products) != 30:"
+              ),
+              (
+                  'f"Przetworzono '
+                  '{len(products)}/7 produktów."'
+              ): (
+                  'f"Przetworzono '
+                  '{len(products)}/30 produktów."'
+              ),
+              (
+                  '"ranking-v21.csv"'
+              ): (
+                  '"ranking-v23-30.csv"'
+              ),
+              (
+                  '"components-v21.csv"'
+              ): (
+                  '"components-v23-30.csv"'
+              ),
+              (
+                  '"group-scores-v21.csv"'
+              ): (
+                  '"group-scores-v23-30.csv"'
+              ),
+              (
+                  '"exceptions-v21.csv"'
+              ): (
+                  '"exceptions-v23-30.csv"'
+              ),
+              (
+                  '"ranking-v21.json"'
+              ): (
+                  '"ranking-v23-30.json"'
+              ),
+              (
+                  '"components-v21.json"'
+              ): (
+                  '"components-v23-30.json"'
+              ),
+              (
+                  '"group-scores-v21.json"'
+              ): (
+                  '"group-scores-v23-30.json"'
+              ),
+              (
+                  '"methodology-v21.json"'
+              ): (
+                  '"methodology-v23-30.json"'
+              ),
+          }
+
+          missing = [
+              old
+              for old in replacements
+              if old not in source
+          ]
+
+          if missing:
+              raise RuntimeError(
+                  "Nie znaleziono wymaganych fragmentów: "
+                  + " | ".join(missing)
+              )
+
+          for old, new in replacements.items():
+              source = source.replace(
+                  old,
+                  new,
+              )
+
+          output_path.write_text(
+              source,
+              encoding="utf-8",
+          )
+
+          print(
+              "SILNIK RANKINGU 30 PRODUKTÓW: UTWORZONY"
+          )
+          PY
+
+      - name: Kontrola składni
+        run: |
+          python3 -m py_compile \
+            src/ranking_v23_30.py
+
+          echo "SKŁADNIA: OK"
+
+      - name: Przeliczenie rankingu 30 produktów
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 -m src.ranking_v23_30
+
+      - name: Kontrola wyników rankingu
+        run: |
+          python3 - <<'PY'
+          import csv
+          import json
+          import math
+          from pathlib import Path
+
+
+          required = [
+              Path(
+                  "data/catalog/"
+                  "approved-products-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-resolutions-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "ranking-v23-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "components-v23-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "group-scores-v23-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "exceptions-v23-30.csv"
+              ),
+              Path(
+                  "public/data/"
+                  "ranking-v23-30.json"
+              ),
+              Path(
+                  "public/index.html"
+              ),
+          ]
+
+          missing = [
+              str(path)
+              for path in required
+              if not path.exists()
+          ]
+
+          if missing:
+              raise SystemExit(
+                  "Brak plików: "
+                  + ", ".join(missing)
+              )
+
+          with Path(
+              "data/results/ranking-v23-30.csv"
+          ).open(
+              "r",
+              encoding="utf-8-sig",
+              newline="",
+          ) as handle:
+              ranking = list(
+                  csv.DictReader(handle)
+              )
+
+          if len(ranking) != 30:
+              raise SystemExit(
+                  f"Ranking ma {len(ranking)}/30 produktów."
+              )
+
+          product_ids = [
+              row["product_id"]
+              for row in ranking
+          ]
+
+          if len(product_ids) != len(set(product_ids)):
+              raise SystemExit(
+                  "Duplikat produktu w rankingu."
+              )
+
+          qualified = [
+              row
+              for row in ranking
+              if row["qualified"].lower() == "true"
+          ]
+
+          excluded = [
+              row
+              for row in ranking
+              if row["qualified"].lower() != "true"
+          ]
+
+          places = [
+              int(row["place"])
+              for row in qualified
+          ]
+
+          if places != list(
+              range(1, len(qualified) + 1)
+          ):
+              raise SystemExit(
+                  "Nieprawidłowa numeracja rankingu."
+              )
+
+          previous_score = float("inf")
+
+          for row in qualified:
+              score = float(
+                  row["score_cautious"]
+              )
+
+              completeness = float(
+                  row["weighted_completeness"]
+              )
+
+              if not math.isfinite(score):
+                  raise SystemExit(
+                      "Wynik nie jest skończony: "
+                      + row["product_id"]
+                  )
+
+              if score > previous_score + 1e-9:
+                  raise SystemExit(
+                      "Ranking nie jest posortowany."
+                  )
+
+              if completeness < 0.60:
+                  raise SystemExit(
+                      "Niekompletny produkt w rankingu: "
+                      + row["product_id"]
+                  )
+
+              previous_score = score
+
+          for row in excluded:
+              if row["place"]:
+                  raise SystemExit(
+                      "Wykluczony produkt ma miejsce: "
+                      + row["product_id"]
+                  )
+
+          with Path(
+              "public/data/ranking-v23-30.json"
+          ).open(
+              "r",
+              encoding="utf-8",
+          ) as handle:
+              public_ranking = json.load(handle)
+
+          if len(public_ranking) != 30:
+              raise SystemExit(
+                  "Publiczny JSON jest niekompletny."
+              )
+
+          print("KONTROLA RANKINGU: OK")
+          print("Produkty:", len(ranking))
+          print(
+              "Zakwalifikowane:",
+              len(qualified),
+          )
+          print(
+              "Poza rankingiem:",
+              len(excluded),
+          )
+
+          print("")
+          print("TOP 10:")
+
+          for row in qualified[:10]:
+              print(
+                  row["place"],
+                  row["name_pl"],
+                  round(
+                      float(row["score_cautious"]),
+                      2,
+                  ),
+                  round(
+                      float(
+                          row[
+                              "completeness_percent"
+                          ]
+                      ),
+                      1,
+                  ),
+              )
+          PY
+
+      - name: Kontrola bezpieczeństwa
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+
+          secret = os.environ.get(
+              "USDA_API_KEY",
+              "",
+          )
+
+          detected = []
+
+          patterns = [
+              re.compile(
+                  r"AIza[0-9A-Za-z_-]{20,}"
+              ),
+              re.compile(
+                  r"github_pat_[0-9A-Za-z_]{20,}"
+              ),
+              re.compile(
+                  r"ghp_[0-9A-Za-z]{20,}"
+              ),
+              re.compile(
+                  r"-----BEGIN [A-Z ]*PRIVATE KEY-----"
+              ),
+          ]
+
+          for root_name in [
+              "data",
+              "src",
+              "config",
+              "public",
+          ]:
+              root = Path(root_name)
+
+              if not root.exists():
+                  continue
+
+              for path in root.rglob("*"):
+                  if not path.is_file():
+                      continue
+
+                  try:
+                      text = path.read_text(
+                          encoding="utf-8"
+                      )
+                  except UnicodeDecodeError:
+                      continue
+
+                  if secret and secret in text:
+                      detected.append(str(path))
+
+                  if any(
+                      pattern.search(text)
+                      for pattern in patterns
+                  ):
+                      detected.append(str(path))
+
+          if detected:
+              raise SystemExit(
+                  "Wykryto sekret: "
+                  + ", ".join(
+                      sorted(set(detected))
+                  )
+              )
+
+          print("BEZPIECZEŃSTWO: OK")
+          print("Sekrety w plikach: 0")
+          PY
+
+      - name: Zapisanie rankingu
+        run: |
+          git config user.name "Indeks Żywności Bot"
+          git config user.email \
+            "actions@users.noreply.github.com"
+
+          git add \
+            data/catalog/approved-products-30.csv \
+            data/results/source-resolutions-30.csv \
+            data/results/approved-products-30.json \
+            data/results/ranking-v23-30.csv \
+            data/results/components-v23-30.csv \
+            data/results/group-scores-v23-30.csv \
+            data/results/exceptions-v23-30.csv \
+            data/raw \
+            public \
+            src/ranking_v23_30.py
+
+          if git diff --cached --quiet; then
+            echo "Brak zmian do zapisania."
+          else
+            git commit \
+              -m "Etap 40: ranking pilotażowy 30 produktów"
+
+            git push origin HEAD:main
+          fi
+
+      - name: Podsumowanie
+        run: |
+          echo "=========================================="
+          echo "ETAP 40 ZAKOŃCZONY"
+          echo "ŹRÓDŁA: ZAMROŻONE 30/30"
+          echo "WYJĄTKI ŹRÓDEŁ: ROZSTRZYGNIĘTE"
+          echo "RANKING: PRZELICZONY"
+          echo "ROZKŁAD SKŁADNIKÓW: UTWORZONY"
+          echo "BRAK DANYCH != ZERO"
+          echo "TESTY: OK"
+          echo "BEZPIECZEŃSTWO: OK"
+          echo "WYNIKI: ZAPISANE"
+          echo "=========================================="
