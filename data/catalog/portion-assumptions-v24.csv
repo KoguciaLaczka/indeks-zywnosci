@@ -1,0 +1,31 @@
+﻿product_id,name_pl,portion_g,portion_basis,assumption_type,is_medical_recommendation,version
+BEEF-LIVER-RAW,Wątroba wołowa surowa,100.0,porcja podrobów,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+SUNFLOWER-SEEDS,Kernele słonecznika suszone,30.0,mała garść,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+FLAXSEED,Siemię lniane,10.0,około jedna łyżka,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+SARDINE-CANNED,Sardynki w oleju z ośćmi,100.0,porcja po odsączeniu,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+PUMPKIN-SEEDS,Kernele pestek dyni suszone,30.0,mała garść,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+SPINACH-RAW,Szpinak surowy,75.0,duża porcja świeżych liści,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+BEEF-KIDNEY-RAW,Nerki wołowe surowe,100.0,porcja podrobów,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,150.0,porcja ryby,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+ALMONDS-RAW,Migdały nieprażone,30.0,garść,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+KALE-RAW,Jarmuż surowy,100.0,porcja świeżych liści,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+WALNUTS-RAW,Orzechy włoskie,30.0,garść,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+COD-PACIFIC-RAW,Dorsz pacyficzny surowy,150.0,porcja ryby,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+BROCCOLI-RAW,Brokuł surowy,150.0,duża porcja warzyw,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+BEEF-HEART-RAW,Serce wołowe surowe,150.0,porcja mięsa,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+EGG-WHOLE-RAW,Jajo kurze całe surowe,50.0,jedno średnie jajo bez skorupy,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+CHEESE-CHEDDAR,Ser cheddar,30.0,porcja sera,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+LENTILS-COOKED,Soczewica gotowana bez soli,180.0,miseczka ugotowanej soczewicy,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,180.0,miseczka ugotowanej ciecierzycy,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+CAULIFLOWER-RAW,Kalafior surowy,200.0,porcja warzyw,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,150.0,porcja mięsa,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,180.0,miseczka ugotowanej fasoli,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+CARROT-RAW,Marchew surowa,150.0,około dwie średnie marchewki,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+AVOCADO-RAW,Awokado surowe,100.0,około pół dużego awokado,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+POTATO-BAKED,Ziemniak pieczony ze skórką,200.0,jeden duży ziemniak,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,250.0,miska ugotowanej owsianki,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+MILK-WHOLE,Mleko pełne 3.25%,250.0,jedna szklanka,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,200.0,jedno opakowanie lub miseczka,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+BANANA-RAW,Banan surowy,120.0,jeden średni banan bez skórki,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+BLUEBERRIES-RAW,Borówki surowe,125.0,mała miseczka,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
+APPLE-RAW-SKIN,Jabłko surowe ze skórką,180.0,jedno średnie jabłko,analityczna porcja porównawcza,NIE,2.4.0-portion-pilot
