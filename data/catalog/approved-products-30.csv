@@ -1,0 +1,31 @@
+﻿product_id,name_pl,fdc_id,category,state,status,selection_basis,usda_description,data_type,source_url
+BEEF-LIVER-RAW,Wątroba wołowa surowa,169451,Podroby,Surowy,APPROVED,PINNED_VERIFIED,"Beef, variety meats and by-products, liver, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/169451/nutrients
+BEEF-HEART-RAW,Serce wołowe surowe,168625,Podroby,Surowy,APPROVED,PINNED_VERIFIED,"Beef, variety meats and by-products, heart, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/168625/nutrients
+BEEF-KIDNEY-RAW,Nerki wołowe surowe,169449,Podroby,Surowy,APPROVED,AUTO_SELECTED,"Beef, variety meats and by-products, kidneys, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/169449/nutrients
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,174030,Mięso czerwone,Surowy,APPROVED,MANUAL_EXCEPTION_RESOLUTION,"Beef, ground, 90% lean meat / 10% fat, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/174030/nutrients
+EGG-WHOLE-RAW,Jajo kurze całe surowe,171287,Jaja,Surowy,APPROVED,PINNED_VERIFIED,"Egg, whole, raw, fresh",SR Legacy,https://fdc.nal.usda.gov/food-details/171287/nutrients
+MILK-WHOLE,Mleko pełne 3.25%,172217,Nabiał,Płynny,APPROVED,MANUAL_EXCEPTION_RESOLUTION,"Milk, whole, 3.25% milkfat, without added vitamin A and vitamin D",SR Legacy,https://fdc.nal.usda.gov/food-details/172217/nutrients
+YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,171284,Nabiał,Gotowy,APPROVED,AUTO_SELECTED,"Yogurt, plain, whole milk",SR Legacy,https://fdc.nal.usda.gov/food-details/171284/nutrients
+CHEESE-CHEDDAR,Ser cheddar,173414,Nabiał,Gotowy,APPROVED,MANUAL_EXCEPTION_RESOLUTION,"Cheese, cheddar (Includes foods for USDA's Food Distribution Program)",SR Legacy,https://fdc.nal.usda.gov/food-details/173414/nutrients
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,175167,Ryby,Surowy,APPROVED,PINNED_VERIFIED,"Fish, salmon, Atlantic, farmed, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/175167/nutrients
+SARDINE-CANNED,Sardynki w oleju z ośćmi,175139,Ryby,Konserwowany,APPROVED,AUTO_SELECTED,"Fish, sardine, Atlantic, canned in oil, drained solids with bone",SR Legacy,https://fdc.nal.usda.gov/food-details/175139/nutrients
+COD-PACIFIC-RAW,Dorsz pacyficzny surowy,174191,Ryby,Surowy,APPROVED,AUTO_SELECTED,"Fish, cod, Pacific, raw (may have been previously frozen)",SR Legacy,https://fdc.nal.usda.gov/food-details/174191/nutrients
+LENTILS-COOKED,Soczewica gotowana bez soli,172421,Strączki,Gotowany,APPROVED,PINNED_VERIFIED,"Lentils, mature seeds, cooked, boiled, without salt",SR Legacy,https://fdc.nal.usda.gov/food-details/172421/nutrients
+CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,173757,Strączki,Gotowany,APPROVED,MANUAL_EXCEPTION_RESOLUTION,"Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt",SR Legacy,https://fdc.nal.usda.gov/food-details/173757/nutrients
+KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,175194,Strączki,Gotowany,APPROVED,MANUAL_EXCEPTION_RESOLUTION,"Beans, kidney, red, mature seeds, cooked, boiled, without salt",SR Legacy,https://fdc.nal.usda.gov/food-details/175194/nutrients
+OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,173905,Zboża,Gotowany,APPROVED,AUTO_SELECTED,"Cereals, oats, regular and quick, unenriched, cooked with water (includes boiling and microwaving), without salt",SR Legacy,https://fdc.nal.usda.gov/food-details/173905/nutrients
+BROCCOLI-RAW,Brokuł surowy,170379,Warzywa,Surowy,APPROVED,PINNED_VERIFIED,"Broccoli, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/170379/nutrients
+CARROT-RAW,Marchew surowa,170393,Warzywa,Surowy,APPROVED,AUTO_SELECTED,"Carrots, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/170393/nutrients
+CAULIFLOWER-RAW,Kalafior surowy,169986,Warzywa,Surowy,APPROVED,AUTO_SELECTED,"Cauliflower, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/169986/nutrients
+SPINACH-RAW,Szpinak surowy,168462,Warzywa,Surowy,APPROVED,AUTO_SELECTED,"Spinach, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/168462/nutrients
+KALE-RAW,Jarmuż surowy,168421,Warzywa,Surowy,APPROVED,AUTO_SELECTED,"Kale, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/168421/nutrients
+POTATO-BAKED,Ziemniak pieczony ze skórką,170093,Warzywa,Pieczony,APPROVED,MANUAL_EXCEPTION_RESOLUTION,"Potatoes, baked, flesh and skin, without salt",SR Legacy,https://fdc.nal.usda.gov/food-details/170093/nutrients
+APPLE-RAW-SKIN,Jabłko surowe ze skórką,168202,Owoce,Surowy,APPROVED,AUTO_SELECTED,"Apples, raw, golden delicious, with skin",SR Legacy,https://fdc.nal.usda.gov/food-details/168202/nutrients
+BANANA-RAW,Banan surowy,173944,Owoce,Surowy,APPROVED,AUTO_SELECTED,"Bananas, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/173944/nutrients
+BLUEBERRIES-RAW,Borówki surowe,171711,Owoce,Surowy,APPROVED,AUTO_SELECTED,"Blueberries, raw",SR Legacy,https://fdc.nal.usda.gov/food-details/171711/nutrients
+AVOCADO-RAW,Awokado surowe,171705,Owoce,Surowy,APPROVED,AUTO_SELECTED,"Avocados, raw, all commercial varieties",SR Legacy,https://fdc.nal.usda.gov/food-details/171705/nutrients
+ALMONDS-RAW,Migdały nieprażone,170567,Orzechy,Nieprzetworzony,APPROVED,AUTO_SELECTED,"Nuts, almonds",SR Legacy,https://fdc.nal.usda.gov/food-details/170567/nutrients
+WALNUTS-RAW,Orzechy włoskie,170187,Orzechy,Nieprzetworzony,APPROVED,AUTO_SELECTED,"Nuts, walnuts, english",SR Legacy,https://fdc.nal.usda.gov/food-details/170187/nutrients
+SUNFLOWER-SEEDS,Kernele słonecznika suszone,170562,Nasiona,Suszony,APPROVED,AUTO_SELECTED,"Seeds, sunflower seed kernels, dried",SR Legacy,https://fdc.nal.usda.gov/food-details/170562/nutrients
+FLAXSEED,Siemię lniane,169414,Nasiona,Nieprzetworzony,APPROVED,AUTO_SELECTED,"Seeds, flaxseed",SR Legacy,https://fdc.nal.usda.gov/food-details/169414/nutrients
+PUMPKIN-SEEDS,Kernele pestek dyni suszone,170556,Nasiona,Suszony,APPROVED,AUTO_SELECTED,"Seeds, pumpkin and squash seed kernels, dried",SR Legacy,https://fdc.nal.usda.gov/food-details/170556/nutrients

@@ -1,0 +1,31 @@
+﻿product_id,name_pl,old_fdc_id,approved_fdc_id,changed,basis,reason,usda_description,data_type
+BEEF-LIVER-RAW,Wątroba wołowa surowa,169451,169451,False,PINNED_VERIFIED,Ręcznie zatwierdzony FDC ID; tożsamość i energia potwierdzone.,"Beef, variety meats and by-products, liver, raw",SR Legacy
+BEEF-HEART-RAW,Serce wołowe surowe,168625,168625,False,PINNED_VERIFIED,Ręcznie zatwierdzony FDC ID; tożsamość i energia potwierdzone.,"Beef, variety meats and by-products, heart, raw",SR Legacy
+BEEF-KIDNEY-RAW,Nerki wołowe surowe,169449,169449,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Beef, variety meats and by-products, kidneys, raw",SR Legacy
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,2514743,174030,True,MANUAL_EXCEPTION_RESOLUTION,Tożsamy rekord SR Legacy ma pełniejszy profil.,"Beef, ground, 90% lean meat / 10% fat, raw",SR Legacy
+EGG-WHOLE-RAW,Jajo kurze całe surowe,171287,171287,False,PINNED_VERIFIED,Ręcznie zatwierdzony FDC ID; tożsamość i energia potwierdzone.,"Egg, whole, raw, fresh",SR Legacy
+MILK-WHOLE,Mleko pełne 3.25%,171265,172217,True,MANUAL_EXCEPTION_RESOLUTION,Mleko bez dodatkowej fortyfikacji A i D.,"Milk, whole, 3.25% milkfat, without added vitamin A and vitamin D",SR Legacy
+YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,171284,171284,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Yogurt, plain, whole milk",SR Legacy
+CHEESE-CHEDDAR,Ser cheddar,328637,173414,True,MANUAL_EXCEPTION_RESOLUTION,Zwykły cheddar zamiast odmiany sharp lub light.,"Cheese, cheddar (Includes foods for USDA's Food Distribution Program)",SR Legacy
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,175167,175167,False,PINNED_VERIFIED,Ręcznie zatwierdzony FDC ID; tożsamość i energia potwierdzone.,"Fish, salmon, Atlantic, farmed, raw",SR Legacy
+SARDINE-CANNED,Sardynki w oleju z ośćmi,175139,175139,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Fish, sardine, Atlantic, canned in oil, drained solids with bone",SR Legacy
+COD-PACIFIC-RAW,Dorsz pacyficzny surowy,174191,174191,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Fish, cod, Pacific, raw (may have been previously frozen)",SR Legacy
+LENTILS-COOKED,Soczewica gotowana bez soli,172421,172421,False,PINNED_VERIFIED,Ręcznie zatwierdzony FDC ID; tożsamość i energia potwierdzone.,"Lentils, mature seeds, cooked, boiled, without salt",SR Legacy
+CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,,173757,True,MANUAL_EXCEPTION_RESOLUTION,Gotowana ciecierzyca bez soli.,"Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt",SR Legacy
+KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,175194,175194,False,MANUAL_EXCEPTION_RESOLUTION,Czerwona fasola gotowana bez soli.,"Beans, kidney, red, mature seeds, cooked, boiled, without salt",SR Legacy
+OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,173905,173905,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Cereals, oats, regular and quick, unenriched, cooked with water (includes boiling and microwaving), without salt",SR Legacy
+BROCCOLI-RAW,Brokuł surowy,170379,170379,False,PINNED_VERIFIED,Ręcznie zatwierdzony FDC ID; tożsamość i energia potwierdzone.,"Broccoli, raw",SR Legacy
+CARROT-RAW,Marchew surowa,170393,170393,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Carrots, raw",SR Legacy
+CAULIFLOWER-RAW,Kalafior surowy,169986,169986,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Cauliflower, raw",SR Legacy
+SPINACH-RAW,Szpinak surowy,168462,168462,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Spinach, raw",SR Legacy
+KALE-RAW,Jarmuż surowy,168421,168421,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Kale, raw",SR Legacy
+POTATO-BAKED,Ziemniak pieczony ze skórką,170111,170093,True,MANUAL_EXCEPTION_RESOLUTION,Ziemniak pieczony ze skórką bez soli.,"Potatoes, baked, flesh and skin, without salt",SR Legacy
+APPLE-RAW-SKIN,Jabłko surowe ze skórką,168202,168202,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Apples, raw, golden delicious, with skin",SR Legacy
+BANANA-RAW,Banan surowy,173944,173944,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Bananas, raw",SR Legacy
+BLUEBERRIES-RAW,Borówki surowe,171711,171711,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Blueberries, raw",SR Legacy
+AVOCADO-RAW,Awokado surowe,171705,171705,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Avocados, raw, all commercial varieties",SR Legacy
+ALMONDS-RAW,Migdały nieprażone,170567,170567,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Nuts, almonds",SR Legacy
+WALNUTS-RAW,Orzechy włoskie,170187,170187,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Nuts, walnuts, english",SR Legacy
+SUNFLOWER-SEEDS,Kernele słonecznika suszone,170562,170562,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Seeds, sunflower seed kernels, dried",SR Legacy
+FLAXSEED,Siemię lniane,169414,169414,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Seeds, flaxseed",SR Legacy
+PUMPKIN-SEEDS,Kernele pestek dyni suszone,170556,170556,False,AUTO_SELECTED,"Najlepsza zgodność opisu, stanu i kompletności.","Seeds, pumpkin and squash seed kernels, dried",SR Legacy
