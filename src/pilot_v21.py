@@ -113,7 +113,7 @@ def read_catalog() -> list[dict[str, str]]:
 
     with path.open(
         "r",
-        encoding="utf-8",
+        encoding="utf-8-sig",
         newline=""
     ) as handle:
         return list(csv.DictReader(handle))
