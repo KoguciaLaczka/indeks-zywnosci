@@ -1,0 +1,1332 @@
+name: 30 - Automatyczny dobór źródeł
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: source-selector-v22
+  cancel-in-progress: false
+
+jobs:
+  source-selector:
+    name: Wyszukiwanie i kontrola rekordów USDA
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Pobranie repozytorium
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Przygotowanie środowiska
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "requests>=2.32,<3"
+
+          mkdir -p data/catalog
+          mkdir -p data/results
+          mkdir -p data/raw/source-selector
+          mkdir -p src
+
+          test -f src/pilot_v2.py || {
+            echo "BŁĄD: Brakuje src/pilot_v2.py"
+            exit 1
+          }
+
+          test -f src/pilot_v21.py || {
+            echo "BŁĄD: Brakuje src/pilot_v21.py"
+            exit 1
+          }
+
+      - name: Utworzenie katalogu 30 produktów
+        run: |
+          cat > data/catalog/source-selection-30.csv <<'EOF'
+          product_id,name_pl,category,state,search_query,required_terms,forbidden_terms,pinned_fdc_id
+          BEEF-LIVER-RAW,Wątroba wołowa surowa,Podroby,Surowy,beef liver raw,beef|liver|raw,cooked|braised|fried|roasted|grilled,169451
+          BEEF-HEART-RAW,Serce wołowe surowe,Podroby,Surowy,beef heart raw,beef|heart|raw,cooked|braised|fried|roasted|grilled,168625
+          BEEF-KIDNEY-RAW,Nerki wołowe surowe,Podroby,Surowy,beef kidney raw,beef|kidney|raw,cooked|braised|fried|roasted|grilled,
+          BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,Mięso czerwone,Surowy,beef ground 90 lean raw,beef|ground|90|raw,cooked|broiled|fried|roasted,2514743
+          EGG-WHOLE-RAW,Jajo kurze całe surowe,Jaja,Surowy,egg whole raw fresh,egg|whole|raw,cooked|fried|scrambled|poached,171287
+          MILK-WHOLE,Mleko pełne 3,25%,Nabiał,Płynny,milk whole 3.25 percent,milk|whole|3|25,dry|powder|chocolate|human,
+          YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,Nabiał,Gotowy,yogurt plain whole milk,yogurt|plain|whole|milk,fruit|vanilla|sweetened|lowfat|nonfat,
+          CHEESE-CHEDDAR,Ser cheddar,Nabiał,Gotowy,cheese cheddar,cheese|cheddar,sauce|spread|soup,
+          SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,Ryby,Surowy,fish salmon Atlantic farmed raw,salmon|atlantic|farmed|raw,cooked|smoked|canned|wild,175167
+          SARDINE-CANNED,Sardynki w oleju z ośćmi,Ryby,Konserwowany,fish sardine Atlantic canned oil bone,sardine|canned|oil,bone-less|without bone,
+          COD-PACIFIC-RAW,Dorsz pacyficzny surowy,Ryby,Surowy,fish cod Pacific raw,cod|pacific|raw,cooked|fried|breaded|smoked,
+          LENTILS-COOKED,Soczewica gotowana bez soli,Strączki,Gotowany,lentils cooked boiled without salt,lentils|cooked|without salt,with salt|canned|raw,172421
+          CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,Strączki,Gotowany,chickpeas cooked boiled without salt,chickpeas|cooked|without salt,with salt|canned|raw,
+          KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,Strączki,Gotowany,kidney beans cooked boiled without salt,kidney|beans|cooked|without salt,with salt|canned|raw,
+          OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,Zboża,Gotowany,cereals oats cooked with water,oats|cooked|water,milk|instant|fortified,
+          BROCCOLI-RAW,Brokuł surowy,Warzywa,Surowy,broccoli raw,broccoli|raw,cooked|boiled|frozen,170379
+          CARROT-RAW,Marchew surowa,Warzywa,Surowy,carrots raw,carrot|raw,cooked|boiled|canned|frozen,
+          CAULIFLOWER-RAW,Kalafior surowy,Warzywa,Surowy,cauliflower raw,cauliflower|raw,cooked|boiled|frozen,
+          SPINACH-RAW,Szpinak surowy,Warzywa,Surowy,spinach raw,spinach|raw,cooked|boiled|canned|frozen,
+          KALE-RAW,Jarmuż surowy,Warzywa,Surowy,kale raw,kale|raw,cooked|boiled|frozen,
+          POTATO-BAKED,Siemniak pieczony ze skórką,Warzywa,Pieczony,potato baked flesh and skin,potato|baked|skin,without skin|fried|boiled,
+          APPLE-RAW-SKIN,Jabłko surowe ze skórką,Owoce,Surowy,apples raw with skin,apple|raw|skin,without skin|cooked|canned,
+          BANANA-RAW,Banan surowy,Owoce,Surowy,bananas raw,banana|raw,cooked|fried|dried,
+          BLUEBERRIES-RAW,Borówki surowe,Owoce,Surowy,blueberries raw,blueberries|raw,cooked|canned|frozen|sweetened,
+          AVOCADO-RAW,Awokado surowe,Owoce,Surowy,avocados raw all commercial varieties,avocado|raw,cooked|oil,
+          ALMONDS-RAW,Migdały nieprażone,Orzechy,Nieprzetworzony,nuts almonds raw,almonds,roasted|salted|oil,
+          WALNUTS-RAW,Orzechy włoskie,Orzechy,Nieprzetworzony,nuts walnuts English,walnuts|English,roasted|salted|oil,
+          SUNFLOWER-SEEDS,Kernele słonecznika suszone,Nasiona,Suszony,seeds sunflower seed kernels dried,sunflower|kernels|dried,roasted|salted|oil,
+          FLAXSEED,Siemię lniane,Nasiona,Nieprzetworzony,seeds flaxseed,flaxseed,oil|bread|ground meal,
+          PUMPKIN-SEEDS,Kernele pestek dyni suszone,Nasiona,Suszony,seeds pumpkin squash seed kernels dried,pumpkin|seed|kernels|dried,roasted|salted|oil,
+          EOF
+
+      - name: Utworzenie selektora źródeł
+        run: |
+          cat > src/source_selector_v22.py <<'PY'
+          from __future__ import annotations
+
+          import csv
+          import json
+          import math
+          import os
+          import re
+          import time
+          import unicodedata
+          from collections import defaultdict
+          from difflib import SequenceMatcher
+          from pathlib import Path
+          from typing import Any
+
+          import requests
+
+          import src.pilot_v21 as v21
+
+
+          ROOT = Path(__file__).resolve().parents[1]
+          DATA = ROOT / "data"
+
+          SEARCH_URL = (
+              "https://api.nal.usda.gov/fdc/v1/foods/search"
+          )
+          DETAILS_URL = (
+              "https://api.nal.usda.gov/fdc/v1/food"
+          )
+
+          VERSION = "2.2.0-source-selector"
+
+          TYPE_PRIORITY = {
+              "Foundation": 0.02,
+              "SR Legacy": 0.00,
+          }
+
+
+          def normalize(value: Any) -> str:
+              text = str(value or "").lower()
+
+              text = unicodedata.normalize(
+                  "NFKD",
+                  text,
+              )
+
+              text = "".join(
+                  character
+                  for character in text
+                  if not unicodedata.combining(character)
+              )
+
+              text = re.sub(
+                  r"[^a-z0-9]+",
+                  " ",
+                  text,
+              )
+
+              return re.sub(
+                  r"\s+",
+                  " ",
+                  text,
+              ).strip()
+
+
+          def split_terms(value: str) -> list[str]:
+              return [
+                  normalize(term)
+                  for term in str(value or "").split("|")
+                  if normalize(term)
+              ]
+
+
+          def read_catalog() -> list[dict[str, str]]:
+              path = (
+                  DATA
+                  / "catalog"
+                  / "source-selection-30.csv"
+              )
+
+              with path.open(
+                  "r",
+                  encoding="utf-8",
+                  newline="",
+              ) as handle:
+                  return list(csv.DictReader(handle))
+
+
+          def write_csv(
+              path: Path,
+              rows: list[dict[str, Any]],
+              columns: list[str],
+          ) -> None:
+              path.parent.mkdir(
+                  parents=True,
+                  exist_ok=True,
+              )
+
+              with path.open(
+                  "w",
+                  encoding="utf-8-sig",
+                  newline="",
+              ) as handle:
+                  writer = csv.DictWriter(
+                      handle,
+                      fieldnames=columns,
+                      extrasaction="ignore",
+                  )
+                  writer.writeheader()
+                  writer.writerows(rows)
+
+
+          def write_json(
+              path: Path,
+              value: Any,
+          ) -> None:
+              path.parent.mkdir(
+                  parents=True,
+                  exist_ok=True,
+              )
+
+              with path.open(
+                  "w",
+                  encoding="utf-8",
+              ) as handle:
+                  json.dump(
+                      value,
+                      handle,
+                      ensure_ascii=False,
+                      indent=2,
+                  )
+
+
+          def request_json(
+              session: requests.Session,
+              method: str,
+              url: str,
+              api_key: str,
+              *,
+              payload: dict[str, Any] | None = None,
+              attempts: int = 4,
+          ) -> Any:
+              last_error: Exception | None = None
+
+              for attempt in range(1, attempts + 1):
+                  try:
+                      if method == "POST":
+                          response = session.post(
+                              url,
+                              params={"api_key": api_key},
+                              json=payload,
+                              timeout=45,
+                          )
+                      else:
+                          response = session.get(
+                              url,
+                              params={"api_key": api_key},
+                              timeout=45,
+                          )
+
+                      if response.status_code == 429:
+                          raise RuntimeError(
+                              "USDA API limit 429"
+                          )
+
+                      response.raise_for_status()
+                      return response.json()
+
+                  except Exception as error:
+                      last_error = error
+
+                      if attempt == attempts:
+                          break
+
+                      time.sleep(2 ** attempt)
+
+              raise RuntimeError(
+                  f"Błąd API po {attempts} próbach: "
+                  f"{last_error}"
+              )
+
+
+          def search_candidates(
+              session: requests.Session,
+              api_key: str,
+              query: str,
+          ) -> list[dict[str, Any]]:
+              payload = {
+                  "query": query,
+                  "dataType": [
+                      "Foundation",
+                      "SR Legacy",
+                  ],
+                  "pageSize": 25,
+                  "pageNumber": 1,
+              }
+
+              result = request_json(
+                  session,
+                  "POST",
+                  SEARCH_URL,
+                  api_key,
+                  payload=payload,
+              )
+
+              return result.get("foods", [])
+
+
+          def fetch_details(
+              session: requests.Session,
+              api_key: str,
+              fdc_id: str | int,
+          ) -> dict[str, Any]:
+              return request_json(
+                  session,
+                  "GET",
+                  f"{DETAILS_URL}/{fdc_id}",
+                  api_key,
+              )
+
+
+          def identity_check(
+              row: dict[str, str],
+              description: str,
+          ) -> dict[str, Any]:
+              normalized_description = normalize(description)
+              normalized_query = normalize(
+                  row["search_query"]
+              )
+
+              required = split_terms(
+                  row["required_terms"]
+              )
+
+              forbidden = split_terms(
+                  row["forbidden_terms"]
+              )
+
+              missing_required = [
+                  term
+                  for term in required
+                  if term not in normalized_description
+              ]
+
+              present_forbidden = [
+                  term
+                  for term in forbidden
+                  if term in normalized_description
+              ]
+
+              valid = (
+                  not missing_required
+                  and not present_forbidden
+              )
+
+              required_ratio = (
+                  (
+                      len(required)
+                      - len(missing_required)
+                  )
+                  / len(required)
+                  if required
+                  else 1.0
+              )
+
+              similarity = SequenceMatcher(
+                  None,
+                  normalized_query,
+                  normalized_description,
+              ).ratio()
+
+              identity_score = (
+                  0.55 * required_ratio
+                  + 0.45 * similarity
+              )
+
+              return {
+                  "valid": valid,
+                  "identity_score": identity_score,
+                  "missing_required":
+                      "|".join(missing_required),
+                  "present_forbidden":
+                      "|".join(present_forbidden),
+              }
+
+
+          def nutrient_coverage(
+              food: dict[str, Any],
+          ) -> dict[str, Any]:
+              rows = v21.base.nutrient_rows(food)
+
+              energy = v21.base.find_energy(rows)
+
+              if energy is None:
+                  return {
+                      "energy_available": False,
+                      "coverage": 0.0,
+                      "available_components": 0,
+                      "expected_components": 29,
+                      "group_details": {},
+                  }
+
+              available_by_group = defaultdict(int)
+              values: dict[str, float] = {}
+
+              for definition in v21.NUTRIENTS:
+                  found = v21.base.find_nutrient(
+                      rows,
+                      definition["fdc_ids"],
+                      definition["unit"],
+                  )
+
+                  if found is None:
+                      continue
+
+                  value = float(found["value"])
+
+                  if not math.isfinite(value) or value < 0:
+                      continue
+
+                  available_by_group[
+                      definition["group"]
+                  ] += 1
+
+                  values[definition["key"]] = value
+
+              protein_present = (
+                  1 if "protein" in values else 0
+              )
+
+              aas = v21.base.amino_acid_score(
+                  rows,
+                  values.get("protein"),
+              )
+
+              protein_available = (
+                  protein_present
+                  + (1 if aas is not None else 0)
+              )
+
+              group_details: dict[str, Any] = {}
+
+              for group, weight in v21.GROUP_WEIGHTS.items():
+                  if group == "protein_and_amino_acids":
+                      available = protein_available
+                      expected = 2
+                  else:
+                      expected = len(
+                          v21.DEFINITIONS_BY_GROUP[group]
+                      )
+                      available = available_by_group[group]
+
+                  completeness = (
+                      available / expected
+                      if expected
+                      else 0.0
+                  )
+
+                  group_details[group] = {
+                      "available": available,
+                      "expected": expected,
+                      "completeness": completeness,
+                      "weight": weight,
+                  }
+
+              coverage = sum(
+                  details["completeness"]
+                  * details["weight"]
+                  for details in group_details.values()
+              )
+
+              available_components = sum(
+                  details["available"]
+                  for details in group_details.values()
+              )
+
+              expected_components = sum(
+                  details["expected"]
+                  for details in group_details.values()
+              )
+
+              return {
+                  "energy_available": True,
+                  "energy_kcal_100g":
+                      float(energy["value"]),
+                  "energy_source":
+                      energy.get("source", ""),
+                  "coverage": coverage,
+                  "available_components":
+                      available_components,
+                  "expected_components":
+                      expected_components,
+                  "group_details": group_details,
+              }
+
+
+          def candidate_record(
+              catalog_row: dict[str, str],
+              food: dict[str, Any],
+          ) -> dict[str, Any]:
+              description = str(
+                  food.get("description", "")
+              )
+
+              identity = identity_check(
+                  catalog_row,
+                  description,
+              )
+
+              coverage = nutrient_coverage(food)
+
+              data_type = str(
+                  food.get("dataType", "")
+              )
+
+              total_score = (
+                  0.65 * identity["identity_score"]
+                  + 0.33 * coverage["coverage"]
+                  + TYPE_PRIORITY.get(data_type, 0.0)
+              )
+
+              return {
+                  "product_id":
+                      catalog_row["product_id"],
+                  "name_pl":
+                      catalog_row["name_pl"],
+                  "category":
+                      catalog_row["category"],
+                  "state":
+                      catalog_row["state"],
+                  "search_query":
+                      catalog_row["search_query"],
+                  "fdc_id":
+                      str(food.get("fdcId", "")),
+                  "description": description,
+                  "data_type": data_type,
+                  "identity_valid":
+                      identity["valid"],
+                  "identity_score":
+                      identity["identity_score"],
+                  "missing_required":
+                      identity["missing_required"],
+                  "present_forbidden":
+                      identity["present_forbidden"],
+                  "coverage":
+                      coverage["coverage"],
+                  "coverage_percent":
+                      coverage["coverage"] * 100.0,
+                  "available_components":
+                      coverage["available_components"],
+                  "expected_components":
+                      coverage["expected_components"],
+                  "energy_available":
+                      coverage["energy_available"],
+                  "energy_kcal_100g":
+                      coverage.get(
+                          "energy_kcal_100g",
+                          "",
+                      ),
+                  "total_selection_score":
+                      total_score,
+                  "source_url":
+                      "https://fdc.nal.usda.gov/"
+                      f"food-details/"
+                      f"{food.get('fdcId', '')}/nutrients",
+              }
+
+
+          def main() -> None:
+              api_key = os.environ.get(
+                  "USDA_API_KEY",
+                  "",
+              ).strip()
+
+              if not api_key:
+                  raise SystemExit(
+                      "BŁĄD: Brakuje USDA_API_KEY."
+                  )
+
+              catalog = read_catalog()
+
+              if len(catalog) != 30:
+                  raise RuntimeError(
+                      f"Katalog ma {len(catalog)}/30 produktów."
+                  )
+
+              product_ids = [
+                  row["product_id"]
+                  for row in catalog
+              ]
+
+              if len(product_ids) != len(set(product_ids)):
+                  raise RuntimeError(
+                      "Duplikat product_id w katalogu."
+                  )
+
+              session = requests.Session()
+              session.headers.update(
+                  {
+                      "User-Agent":
+                          "KoguciaLaczka-"
+                          "IndeksZywnosci/2.2"
+                  }
+              )
+
+              all_candidates: list[dict[str, Any]] = []
+              selected_rows: list[dict[str, Any]] = []
+              exceptions: list[dict[str, Any]] = []
+
+              for number, row in enumerate(
+                  catalog,
+                  start=1,
+              ):
+                  product_id = row["product_id"]
+                  pinned = row["pinned_fdc_id"].strip()
+
+                  print(
+                      f"[{number}/30] {product_id}"
+                  )
+
+                  candidate_foods: list[dict[str, Any]] = []
+                  seen_fdc_ids: set[str] = set()
+
+                  if pinned:
+                      try:
+                          pinned_food = fetch_details(
+                              session,
+                              api_key,
+                              pinned,
+                          )
+
+                          candidate_foods.append(
+                              pinned_food
+                          )
+
+                          seen_fdc_ids.add(
+                              str(
+                                  pinned_food.get(
+                                      "fdcId",
+                                      pinned,
+                                  )
+                              )
+                          )
+                      except Exception as error:
+                          exceptions.append(
+                              {
+                                  "product_id": product_id,
+                                  "severity": "critical",
+                                  "code":
+                                      "pinned_record_failed",
+                                  "message": str(error),
+                              }
+                          )
+
+                  try:
+                      search_results = search_candidates(
+                          session,
+                          api_key,
+                          row["search_query"],
+                      )
+                  except Exception as error:
+                      exceptions.append(
+                          {
+                              "product_id": product_id,
+                              "severity": "critical",
+                              "code": "search_failed",
+                              "message": str(error),
+                          }
+                      )
+                      continue
+
+                  valid_search_results = []
+
+                  for brief in search_results:
+                      identity = identity_check(
+                          row,
+                          str(
+                              brief.get(
+                                  "description",
+                                  "",
+                              )
+                          ),
+                      )
+
+                      if identity["valid"]:
+                          valid_search_results.append(
+                              brief
+                          )
+
+                  for brief in valid_search_results[:6]:
+                      fdc_id = str(
+                          brief.get("fdcId", "")
+                      )
+
+                      if not fdc_id:
+                          continue
+
+                      if fdc_id in seen_fdc_ids:
+                          continue
+
+                      try:
+                          detailed = fetch_details(
+                              session,
+                              api_key,
+                              fdc_id,
+                          )
+                      except Exception as error:
+                          exceptions.append(
+                              {
+                                  "product_id": product_id,
+                                  "severity": "warning",
+                                  "code":
+                                      "candidate_fetch_failed",
+                                  "message":
+                                      f"FDC {fdc_id}: {error}",
+                              }
+                          )
+                          continue
+
+                      candidate_foods.append(detailed)
+                      seen_fdc_ids.add(fdc_id)
+
+                      time.sleep(0.10)
+
+                  records = [
+                      candidate_record(row, food)
+                      for food in candidate_foods
+                  ]
+
+                  records.sort(
+                      key=lambda item: (
+                          bool(item["identity_valid"]),
+                          bool(item["energy_available"]),
+                          float(
+                              item[
+                                  "total_selection_score"
+                              ]
+                          ),
+                      ),
+                      reverse=True,
+                  )
+
+                  for rank, record in enumerate(
+                      records,
+                      start=1,
+                  ):
+                      record["candidate_rank"] = rank
+                      record["pinned"] = (
+                          bool(pinned)
+                          and record["fdc_id"] == pinned
+                      )
+                      all_candidates.append(record)
+
+                  valid_records = [
+                      record
+                      for record in records
+                      if record["identity_valid"]
+                      and record["energy_available"]
+                  ]
+
+                  selected: dict[str, Any] | None = None
+                  selection_status = ""
+                  selection_reason = ""
+
+                  pinned_records = [
+                      record
+                      for record in valid_records
+                      if record["pinned"]
+                  ]
+
+                  if pinned_records:
+                      selected = pinned_records[0]
+                      selection_status = (
+                          "PINNED_VERIFIED"
+                      )
+                      selection_reason = (
+                          "Ręcznie zatwierdzony FDC ID; "
+                          "tożsamość i energia potwierdzone."
+                      )
+
+                  elif not valid_records:
+                      selection_status = (
+                          "REVIEW_NO_VALID_CANDIDATE"
+                      )
+                      selection_reason = (
+                          "Brak kandydata spełniającego "
+                          "warunki tożsamości i energii."
+                      )
+
+                  else:
+                      selected = valid_records[0]
+
+                      second = (
+                          valid_records[1]
+                          if len(valid_records) > 1
+                          else None
+                      )
+
+                      ambiguous = (
+                          second is not None
+                          and abs(
+                              float(
+                                  selected[
+                                      "total_selection_score"
+                                  ]
+                              )
+                              - float(
+                                  second[
+                                      "total_selection_score"
+                                  ]
+                              )
+                          ) < 0.025
+                      )
+
+                      low_identity = (
+                          float(
+                              selected["identity_score"]
+                          ) < 0.68
+                      )
+
+                      if ambiguous:
+                          selection_status = (
+                              "REVIEW_AMBIGUOUS"
+                          )
+                          selection_reason = (
+                              "Dwóch kandydatów ma bardzo "
+                              "zbliżoną ocenę."
+                          )
+                      elif low_identity:
+                          selection_status = (
+                              "REVIEW_LOW_IDENTITY"
+                          )
+                          selection_reason = (
+                              "Dopasowanie opisu jest "
+                              "niewystarczająco pewne."
+                          )
+                      else:
+                          selection_status = (
+                              "AUTO_SELECTED"
+                          )
+                          selection_reason = (
+                              "Najlepsza zgodność opisu, "
+                              "stanu i kompletności."
+                          )
+
+                  if selected is None:
+                      selected_rows.append(
+                          {
+                              "product_id": product_id,
+                              "name_pl": row["name_pl"],
+                              "category": row["category"],
+                              "state": row["state"],
+                              "selected_fdc_id": "",
+                              "selected_description": "",
+                              "data_type": "",
+                              "identity_score": "",
+                              "coverage_percent": "",
+                              "available_components": "",
+                              "expected_components": "",
+                              "selection_score": "",
+                              "selection_status":
+                                  selection_status,
+                              "selection_reason":
+                                  selection_reason,
+                              "source_url": "",
+                              "selector_version": VERSION,
+                          }
+                      )
+
+                      exceptions.append(
+                          {
+                              "product_id": product_id,
+                              "severity": "review",
+                              "code": selection_status,
+                              "message": selection_reason,
+                          }
+                      )
+                  else:
+                      selected_rows.append(
+                          {
+                              "product_id": product_id,
+                              "name_pl": row["name_pl"],
+                              "category": row["category"],
+                              "state": row["state"],
+                              "selected_fdc_id":
+                                  selected["fdc_id"],
+                              "selected_description":
+                                  selected["description"],
+                              "data_type":
+                                  selected["data_type"],
+                              "identity_score":
+                                  selected["identity_score"],
+                              "coverage_percent":
+                                  selected["coverage_percent"],
+                              "available_components":
+                                  selected[
+                                      "available_components"
+                                  ],
+                              "expected_components":
+                                  selected[
+                                      "expected_components"
+                                  ],
+                              "selection_score":
+                                  selected[
+                                      "total_selection_score"
+                                  ],
+                              "selection_status":
+                                  selection_status,
+                              "selection_reason":
+                                  selection_reason,
+                              "source_url":
+                                  selected["source_url"],
+                              "selector_version": VERSION,
+                          }
+                      )
+
+                      if selection_status.startswith(
+                          "REVIEW_"
+                      ):
+                          exceptions.append(
+                              {
+                                  "product_id": product_id,
+                                  "severity": "review",
+                                  "code": selection_status,
+                                  "message":
+                                      selection_reason,
+                              }
+                          )
+
+                  time.sleep(0.15)
+
+              selected_columns = [
+                  "product_id",
+                  "name_pl",
+                  "category",
+                  "state",
+                  "selected_fdc_id",
+                  "selected_description",
+                  "data_type",
+                  "identity_score",
+                  "coverage_percent",
+                  "available_components",
+                  "expected_components",
+                  "selection_score",
+                  "selection_status",
+                  "selection_reason",
+                  "source_url",
+                  "selector_version",
+              ]
+
+              candidate_columns = [
+                  "product_id",
+                  "name_pl",
+                  "category",
+                  "state",
+                  "search_query",
+                  "candidate_rank",
+                  "fdc_id",
+                  "description",
+                  "data_type",
+                  "pinned",
+                  "identity_valid",
+                  "identity_score",
+                  "missing_required",
+                  "present_forbidden",
+                  "coverage",
+                  "coverage_percent",
+                  "available_components",
+                  "expected_components",
+                  "energy_available",
+                  "energy_kcal_100g",
+                  "total_selection_score",
+                  "source_url",
+              ]
+
+              exception_columns = [
+                  "product_id",
+                  "severity",
+                  "code",
+                  "message",
+              ]
+
+              write_csv(
+                  DATA
+                  / "results"
+                  / "source-selection-30.csv",
+                  selected_rows,
+                  selected_columns,
+              )
+
+              write_csv(
+                  DATA
+                  / "results"
+                  / "source-candidates-30.csv",
+                  all_candidates,
+                  candidate_columns,
+              )
+
+              write_csv(
+                  DATA
+                  / "results"
+                  / "source-exceptions-30.csv",
+                  exceptions,
+                  exception_columns,
+              )
+
+              write_json(
+                  DATA
+                  / "results"
+                  / "source-selection-30.json",
+                  selected_rows,
+              )
+
+              critical = [
+                  row
+                  for row in exceptions
+                  if row["severity"] == "critical"
+              ]
+
+              pinned_verified = [
+                  row
+                  for row in selected_rows
+                  if row["selection_status"]
+                  == "PINNED_VERIFIED"
+              ]
+
+              auto_selected = [
+                  row
+                  for row in selected_rows
+                  if row["selection_status"]
+                  == "AUTO_SELECTED"
+              ]
+
+              review = [
+                  row
+                  for row in selected_rows
+                  if row["selection_status"].startswith(
+                      "REVIEW_"
+                  )
+              ]
+
+              if critical:
+                  raise RuntimeError(
+                      "Krytyczne błędy: "
+                      + " | ".join(
+                          row["product_id"]
+                          + ": "
+                          + row["message"]
+                          for row in critical
+                      )
+                  )
+
+              if len(selected_rows) != 30:
+                  raise RuntimeError(
+                      f"Raport ma "
+                      f"{len(selected_rows)}/30 produktów."
+                  )
+
+              if len(pinned_verified) != 7:
+                  raise RuntimeError(
+                      f"Zweryfikowano "
+                      f"{len(pinned_verified)}/7 "
+                      f"przypiętych rekordów."
+                  )
+
+              print("")
+              print("======================================")
+              print("SELEKTOR ŹRÓDEŁ V2.2 ZAKOŃCZONY")
+              print("Produkty:", len(selected_rows))
+              print(
+                  "Przypięte i zweryfikowane:",
+                  len(pinned_verified),
+              )
+              print(
+                  "Wybrane automatycznie:",
+                  len(auto_selected),
+              )
+              print(
+                  "Do kontroli wyjątków:",
+                  len(review),
+              )
+              print(
+                  "Krytyczne błędy:",
+                  len(critical),
+              )
+              print(
+                  "Kandydaci przeanalizowani:",
+                  len(all_candidates),
+              )
+              print("======================================")
+
+              for row in selected_rows:
+                  print(
+                      row["selection_status"],
+                      row["product_id"],
+                      row["selected_fdc_id"],
+                      row["data_type"],
+                      row["coverage_percent"],
+                  )
+
+
+          if __name__ == "__main__":
+              main()
+          PY
+
+      - name: Uruchomienie selektora
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 -m src.source_selector_v22
+
+      - name: Test integralności raportów
+        run: |
+          python3 - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          required = [
+              Path(
+                  "data/catalog/"
+                  "source-selection-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-selection-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-candidates-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-exceptions-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-selection-30.json"
+              ),
+              Path("src/source_selector_v22.py"),
+          ]
+
+          missing = [
+              str(path)
+              for path in required
+              if not path.exists()
+          ]
+
+          if missing:
+              raise SystemExit(
+                  "Brak plików: " + ", ".join(missing)
+              )
+
+          with Path(
+              "data/results/source-selection-30.csv"
+          ).open(
+              "r",
+              encoding="utf-8-sig",
+              newline="",
+          ) as handle:
+              selected = list(csv.DictReader(handle))
+
+          if len(selected) != 30:
+              raise SystemExit(
+                  f"Raport ma {len(selected)}/30 rekordów."
+              )
+
+          ids = [
+              row["product_id"]
+              for row in selected
+          ]
+
+          if len(ids) != len(set(ids)):
+              raise SystemExit(
+                  "Duplikat product_id."
+              )
+
+          pinned = [
+              row
+              for row in selected
+              if row["selection_status"]
+              == "PINNED_VERIFIED"
+          ]
+
+          if len(pinned) != 7:
+              raise SystemExit(
+                  f"Przypięte rekordy: {len(pinned)}/7."
+              )
+
+          valid_statuses = {
+              "PINNED_VERIFIED",
+              "AUTO_SELECTED",
+              "REVIEW_AMBIGUOUS",
+              "REVIEW_LOW_IDENTITY",
+              "REVIEW_NO_VALID_CANDIDATE",
+          }
+
+          for row in selected:
+              if row["selection_status"] not in valid_statuses:
+                  raise SystemExit(
+                      "Nieznany status: "
+                      + row["selection_status"]
+                  )
+
+              if (
+                  row["selection_status"]
+                  in {
+                      "PINNED_VERIFIED",
+                      "AUTO_SELECTED",
+                  }
+                  and not row["selected_fdc_id"]
+              ):
+                  raise SystemExit(
+                      "Wybrany produkt nie ma FDC ID: "
+                      + row["product_id"]
+                  )
+
+          with Path(
+              "data/results/source-selection-30.json"
+          ).open(
+              "r",
+              encoding="utf-8",
+          ) as handle:
+              public_json = json.load(handle)
+
+          if len(public_json) != 30:
+              raise SystemExit(
+                  "JSON jest niekompletny."
+              )
+
+          print("TEST RAPORTÓW: OK")
+          print("Produkty: 30/30")
+          print("Przypięte rekordy: 7/7")
+          print("Duplikaty: 0")
+          PY
+
+      - name: Kontrola bezpieczeństwa
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          secret = os.environ.get(
+              "USDA_API_KEY",
+              "",
+          )
+
+          forbidden_files = []
+
+          patterns = [
+              re.compile(
+                  r"AIza[0-9A-Za-z_-]{20,}"
+              ),
+              re.compile(
+                  r"github_pat_[0-9A-Za-z_]{20,}"
+              ),
+              re.compile(
+                  r"ghp_[0-9A-Za-z]{20,}"
+              ),
+              re.compile(
+                  r"-----BEGIN [A-Z ]*PRIVATE KEY-----"
+              ),
+          ]
+
+          for root_name in [
+              "data",
+              "src",
+              "config",
+              "public",
+          ]:
+              root = Path(root_name)
+
+              if not root.exists():
+                  continue
+
+              for path in root.rglob("*"):
+                  if not path.is_file():
+                      continue
+
+                  try:
+                      text = path.read_text(
+                          encoding="utf-8"
+                      )
+                  except UnicodeDecodeError:
+                      continue
+
+                  if secret and secret in text:
+                      forbidden_files.append(
+                          str(path)
+                      )
+
+                  if any(
+                      pattern.search(text)
+                      for pattern in patterns
+                  ):
+                      forbidden_files.append(
+                          str(path)
+                      )
+
+          if forbidden_files:
+              raise SystemExit(
+                  "Wykryto sekret: "
+                  + ", ".join(
+                      sorted(set(forbidden_files))
+                  )
+              )
+
+          print("BEZPIECZEŃSTWO: OK")
+          print("Sekrety w plikach: 0")
+          PY
+
+      - name: Zapisanie raportów w repozytorium
+        run: |
+          git config user.name "Indeks Żywności Bot"
+          git config user.email \
+            "actions@users.noreply.github.com"
+
+          git add \
+            data/catalog/source-selection-30.csv \
+            data/results/source-selection-30.csv \
+            data/results/source-candidates-30.csv \
+            data/results/source-exceptions-30.csv \
+            data/results/source-selection-30.json \
+            src/source_selector_v22.py
+
+          if git diff --cached --quiet; then
+            echo "Brak zmian do zapisania."
+          else
+            git commit \
+              -m "Etap 30: automatyczny dobór źródeł USDA"
+
+            git push origin HEAD:main
+          fi
+
+      - name: Podsumowanie
+        run: |
+          echo "=========================================="
+          echo "ETAP 30 ZAKOŃCZONY"
+          echo "KATALOG: 30 PRODUKTÓW"
+          echo "PRZYPISANE REKORDY: 7/7 ZWERYFIKOWANE"
+          echo "FOUNDATION I SR LEGACY: SPRAWDZONE"
+          echo "STAN PRODUKTÓW: SPRAWDZONY"
+          echo "KOMPLETNOŚĆ: POLICZONA"
+          echo "KANDYDACI: ZAPISANI"
+          echo "WYJĄTKI: ZAPISANE"
+          echo "SEKRETY W PLIKACH: 0"
+          echo "=========================================="
