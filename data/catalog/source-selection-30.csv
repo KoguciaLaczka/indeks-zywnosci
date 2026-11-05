@@ -1,0 +1,31 @@
+product_id,name_pl,category,state,search_query,required_terms,forbidden_terms,pinned_fdc_id
+BEEF-LIVER-RAW,Wątroba wołowa surowa,Podroby,Surowy,beef liver raw,beef|liver|raw,cooked|braised|fried|roasted|grilled,169451
+BEEF-HEART-RAW,Serce wołowe surowe,Podroby,Surowy,beef heart raw,beef|heart|raw,cooked|braised|fried|roasted|grilled,168625
+BEEF-KIDNEY-RAW,Nerki wołowe surowe,Podroby,Surowy,beef kidney raw,beef|kidney|raw,cooked|braised|fried|roasted|grilled,
+BEEF-GROUND-9010-RAW,Wołowina mielona 90/10 surowa,Mięso czerwone,Surowy,beef ground 90 lean raw,beef|ground|90|raw,cooked|broiled|fried|roasted,2514743
+EGG-WHOLE-RAW,Jajo kurze całe surowe,Jaja,Surowy,egg whole raw fresh,egg|whole|raw,cooked|fried|scrambled|poached,171287
+MILK-WHOLE,Mleko pełne 3.25%,Nabiał,Płynny,milk whole 3.25 percent,milk|whole|3|25,dry|powder|chocolate|human,
+YOGURT-PLAIN-WHOLE,Jogurt naturalny pełnotłusty,Nabiał,Gotowy,yogurt plain whole milk,yogurt|plain|whole|milk,fruit|vanilla|sweetened|lowfat|nonfat,
+CHEESE-CHEDDAR,Ser cheddar,Nabiał,Gotowy,cheese cheddar,cheese|cheddar,sauce|spread|soup,
+SALMON-ATLANTIC-RAW,Łosoś atlantycki hodowlany surowy,Ryby,Surowy,fish salmon Atlantic farmed raw,salmon|atlantic|farmed|raw,cooked|smoked|canned|wild,175167
+SARDINE-CANNED,Sardynki w oleju z ośćmi,Ryby,Konserwowany,fish sardine Atlantic canned oil bone,sardine|canned|oil,bone-less|without bone,
+COD-PACIFIC-RAW,Dorsz pacyficzny surowy,Ryby,Surowy,fish cod Pacific raw,cod|pacific|raw,cooked|fried|breaded|smoked,
+LENTILS-COOKED,Soczewica gotowana bez soli,Strączki,Gotowany,lentils cooked boiled without salt,lentils|cooked|without salt,with salt|canned|raw,172421
+CHICKPEAS-COOKED,Ciecierzyca gotowana bez soli,Strączki,Gotowany,chickpeas cooked boiled without salt,chickpeas|cooked|without salt,with salt|canned|raw,
+KIDNEY-BEANS-COOKED,Fasola czerwona gotowana bez soli,Strączki,Gotowany,kidney beans cooked boiled without salt,kidney|beans|cooked|without salt,with salt|canned|raw,
+OATMEAL-COOKED,Płatki owsiane gotowane na wodzie,Zboża,Gotowany,cereals oats cooked with water,oats|cooked|water,milk|instant|fortified,
+BROCCOLI-RAW,Brokuł surowy,Warzywa,Surowy,broccoli raw,broccoli|raw,cooked|boiled|frozen,170379
+CARROT-RAW,Marchew surowa,Warzywa,Surowy,carrots raw,carrot|raw,cooked|boiled|canned|frozen,
+CAULIFLOWER-RAW,Kalafior surowy,Warzywa,Surowy,cauliflower raw,cauliflower|raw,cooked|boiled|frozen,
+SPINACH-RAW,Szpinak surowy,Warzywa,Surowy,spinach raw,spinach|raw,cooked|boiled|canned|frozen,
+KALE-RAW,Jarmuż surowy,Warzywa,Surowy,kale raw,kale|raw,cooked|boiled|frozen,
+POTATO-BAKED,Siemniak pieczony ze skórką,Warzywa,Pieczony,potato baked flesh and skin,potato|baked|skin,without skin|fried|boiled,
+APPLE-RAW-SKIN,Jabłko surowe ze skórką,Owoce,Surowy,apples raw with skin,apple|raw|skin,without skin|cooked|canned,
+BANANA-RAW,Banan surowy,Owoce,Surowy,bananas raw,banana|raw,cooked|fried|dried,
+BLUEBERRIES-RAW,Borówki surowe,Owoce,Surowy,blueberries raw,blueberries|raw,cooked|canned|frozen|sweetened,
+AVOCADO-RAW,Awokado surowe,Owoce,Surowy,avocados raw all commercial varieties,avocado|raw,cooked|oil,
+ALMONDS-RAW,Migdały nieprażone,Orzechy,Nieprzetworzony,nuts almonds raw,almonds,roasted|salted|oil,
+WALNUTS-RAW,Orzechy włoskie,Orzechy,Nieprzetworzony,nuts walnuts English,walnuts|English,roasted|salted|oil,
+SUNFLOWER-SEEDS,Kernele słonecznika suszone,Nasiona,Suszony,seeds sunflower seed kernels dried,sunflower|kernels|dried,roasted|salted|oil,
+FLAXSEED,Siemię lniane,Nasiona,Nieprzetworzony,seeds flaxseed,flaxseed,oil|bread|ground meal,
+PUMPKIN-SEEDS,Kernele pestek dyni suszone,Nasiona,Suszony,seeds pumpkin squash seed kernels dried,pumpkin|seed|kernels|dried,roasted|salted|oil,

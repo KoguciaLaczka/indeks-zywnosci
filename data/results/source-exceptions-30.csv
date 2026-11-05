@@ -1,0 +1,6 @@
+﻿product_id,severity,code,message
+MILK-WHOLE,review,REVIEW_AMBIGUOUS,Dwóch kandydatów ma bardzo zbliżoną ocenę.
+CHEESE-CHEDDAR,review,REVIEW_AMBIGUOUS,Dwóch kandydatów ma bardzo zbliżoną ocenę.
+CHICKPEAS-COOKED,review,REVIEW_NO_VALID_CANDIDATE,Brak kandydata spełniającego warunki tożsamości i energii.
+KIDNEY-BEANS-COOKED,review,REVIEW_AMBIGUOUS,Dwóch kandydatów ma bardzo zbliżoną ocenę.
+POTATO-BAKED,review,REVIEW_AMBIGUOUS,Dwóch kandydatów ma bardzo zbliżoną ocenę.
