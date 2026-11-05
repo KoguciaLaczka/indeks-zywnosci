@@ -1,0 +1,528 @@
+name: 31 - Naprawa selektora źródeł
+
+on:
+  push:
+    paths:
+      - ".github/workflows/31-repair-source-selector.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: source-selector-repair-v22
+  cancel-in-progress: false
+
+jobs:
+  repair-and-run:
+    name: Naprawa CSV i uruchomienie selektora
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Pobranie repozytorium
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Instalacja zależności
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "requests>=2.32,<3"
+
+          mkdir -p data/catalog
+          mkdir -p data/results
+          mkdir -p data/raw/source-selector
+          mkdir -p src
+
+      - name: Odtworzenie i naprawienie selektora
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import csv
+          import io
+          import textwrap
+
+
+          workflow_path = Path(
+              ".github/workflows/30-source-selector.yml"
+          )
+
+          if not workflow_path.exists():
+              raise SystemExit(
+                  "BŁĄD: Brakuje pliku "
+                  ".github/workflows/30-source-selector.yml"
+              )
+
+          source = workflow_path.read_text(
+              encoding="utf-8"
+          )
+
+
+          def extract_block(
+              text: str,
+              marker: str,
+              terminator: str,
+          ) -> str:
+              lines = text.splitlines()
+              collecting = False
+              collected = []
+
+              for line in lines:
+                  stripped = line.strip()
+
+                  if not collecting:
+                      if marker in line:
+                          collecting = True
+                      continue
+
+                  if stripped == terminator:
+                      return textwrap.dedent(
+                          "\n".join(collected)
+                      ) + "\n"
+
+                  collected.append(line)
+
+              raise RuntimeError(
+                  f"Nie znaleziono bloku: {marker}"
+              )
+
+
+          catalog = extract_block(
+              source,
+              (
+                  "cat > data/catalog/"
+                  "source-selection-30.csv <<'EOF'"
+              ),
+              "EOF",
+          )
+
+          engine = extract_block(
+              source,
+              (
+                  "cat > src/"
+                  "source_selector_v22.py <<'PY'"
+              ),
+              "PY",
+          )
+
+          # Naprawa właściwej przyczyny:
+          # przecinek dziesiętny w niecytowanym polu CSV.
+          catalog = catalog.replace(
+              "Mleko pełne 3,25%",
+              "Mleko pełne 3.25%",
+          )
+
+          reader = csv.DictReader(
+              io.StringIO(catalog)
+          )
+
+          rows = list(reader)
+
+          expected_headers = [
+              "product_id",
+              "name_pl",
+              "category",
+              "state",
+              "search_query",
+              "required_terms",
+              "forbidden_terms",
+              "pinned_fdc_id",
+          ]
+
+          if reader.fieldnames != expected_headers:
+              raise RuntimeError(
+                  "Nieprawidłowe nagłówki katalogu: "
+                  f"{reader.fieldnames}"
+              )
+
+          if len(rows) != 30:
+              raise RuntimeError(
+                  f"Katalog ma {len(rows)}/30 produktów."
+              )
+
+          malformed = [
+              row.get("product_id", "nieznany")
+              for row in rows
+              if None in row
+          ]
+
+          if malformed:
+              raise RuntimeError(
+                  "Przesunięte kolumny CSV: "
+                  + ", ".join(malformed)
+              )
+
+          product_ids = [
+              row["product_id"]
+              for row in rows
+          ]
+
+          if len(product_ids) != len(set(product_ids)):
+              raise RuntimeError(
+                  "Duplikat product_id w katalogu."
+              )
+
+          milk = next(
+              (
+                  row
+                  for row in rows
+                  if row["product_id"] == "MILK-WHOLE"
+              ),
+              None,
+          )
+
+          if milk is None:
+              raise RuntimeError(
+                  "Brakuje produktu MILK-WHOLE."
+              )
+
+          if milk["pinned_fdc_id"]:
+              raise RuntimeError(
+                  "MILK-WHOLE nadal ma fałszywy FDC ID: "
+                  + milk["pinned_fdc_id"]
+              )
+
+          if (
+              milk["forbidden_terms"]
+              != "dry|powder|chocolate|human"
+          ):
+              raise RuntimeError(
+                  "Nieprawidłowe pole forbidden_terms "
+                  "dla MILK-WHOLE."
+              )
+
+          Path(
+              "data/catalog/source-selection-30.csv"
+          ).write_text(
+              catalog,
+              encoding="utf-8",
+          )
+
+          Path(
+              "src/source_selector_v22.py"
+          ).write_text(
+              engine,
+              encoding="utf-8",
+          )
+
+          print("NAPRAWA CSV: OK")
+          print("Produkty: 30/30")
+          print("Kolumny: 8/8")
+          print("MILK-WHOLE pinned_fdc_id: puste")
+          print(
+              "MILK-WHOLE forbidden_terms:",
+              milk["forbidden_terms"],
+          )
+          PY
+
+      - name: Kontrola składni Pythona
+        run: |
+          python3 -m py_compile \
+            src/source_selector_v22.py
+
+          echo "SKŁADNIA SELEKTORA: OK"
+
+      - name: Uruchomienie selektora 30 produktów
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 -m src.source_selector_v22
+
+      - name: Kontrola wyników
+        run: |
+          python3 - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+
+          required_files = [
+              Path(
+                  "data/catalog/"
+                  "source-selection-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-selection-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-candidates-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-exceptions-30.csv"
+              ),
+              Path(
+                  "data/results/"
+                  "source-selection-30.json"
+              ),
+              Path(
+                  "src/source_selector_v22.py"
+              ),
+          ]
+
+          missing = [
+              str(path)
+              for path in required_files
+              if not path.exists()
+          ]
+
+          if missing:
+              raise SystemExit(
+                  "Brak wymaganych plików: "
+                  + ", ".join(missing)
+              )
+
+          with Path(
+              "data/results/source-selection-30.csv"
+          ).open(
+              "r",
+              encoding="utf-8-sig",
+              newline="",
+          ) as handle:
+              selected = list(
+                  csv.DictReader(handle)
+              )
+
+          if len(selected) != 30:
+              raise SystemExit(
+                  f"Raport ma {len(selected)}/30 produktów."
+              )
+
+          product_ids = [
+              row["product_id"]
+              for row in selected
+          ]
+
+          if len(product_ids) != len(set(product_ids)):
+              raise SystemExit(
+                  "Wykryto duplikaty product_id."
+              )
+
+          allowed_statuses = {
+              "PINNED_VERIFIED",
+              "AUTO_SELECTED",
+              "REVIEW_AMBIGUOUS",
+              "REVIEW_LOW_IDENTITY",
+              "REVIEW_NO_VALID_CANDIDATE",
+          }
+
+          invalid_statuses = [
+              row["product_id"]
+              + ": "
+              + row["selection_status"]
+              for row in selected
+              if row["selection_status"]
+              not in allowed_statuses
+          ]
+
+          if invalid_statuses:
+              raise SystemExit(
+                  "Nieprawidłowe statusy: "
+                  + " | ".join(invalid_statuses)
+              )
+
+          pinned = [
+              row
+              for row in selected
+              if row["selection_status"]
+              == "PINNED_VERIFIED"
+          ]
+
+          automatic = [
+              row
+              for row in selected
+              if row["selection_status"]
+              == "AUTO_SELECTED"
+          ]
+
+          review = [
+              row
+              for row in selected
+              if row["selection_status"].startswith(
+                  "REVIEW_"
+              )
+          ]
+
+          selected_with_id = [
+              row
+              for row in selected
+              if row["selected_fdc_id"]
+          ]
+
+          for row in pinned + automatic:
+              if not row["selected_fdc_id"]:
+                  raise SystemExit(
+                      "Wybrany produkt nie ma FDC ID: "
+                      + row["product_id"]
+                  )
+
+          milk = next(
+              row
+              for row in selected
+              if row["product_id"] == "MILK-WHOLE"
+          )
+
+          if (
+              milk["selected_fdc_id"]
+              == "dry|powder|chocolate|human"
+          ):
+              raise SystemExit(
+                  "Fałszywy FDC ID mleka nadal występuje."
+              )
+
+          with Path(
+              "data/results/source-selection-30.json"
+          ).open(
+              "r",
+              encoding="utf-8",
+          ) as handle:
+              json_rows = json.load(handle)
+
+          if len(json_rows) != 30:
+              raise SystemExit(
+                  "JSON jest niekompletny."
+              )
+
+          print("KONTROLA WYNIKÓW: OK")
+          print("Produkty:", len(selected))
+          print(
+              "Przypięte i zweryfikowane:",
+              len(pinned),
+          )
+          print(
+              "Wybrane automatycznie:",
+              len(automatic),
+          )
+          print(
+              "Do kontroli wyjątków:",
+              len(review),
+          )
+          print(
+              "Z przypisanym FDC ID:",
+              len(selected_with_id),
+          )
+          print(
+              "MILK-WHOLE FDC ID:",
+              milk["selected_fdc_id"]
+              or "DO KONTROLI",
+          )
+          PY
+
+      - name: Kontrola bezpieczeństwa
+        env:
+          USDA_API_KEY: ${{ secrets.USDA_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+
+          secret = os.environ.get(
+              "USDA_API_KEY",
+              "",
+          )
+
+          forbidden_files = []
+
+          patterns = [
+              re.compile(
+                  r"AIza[0-9A-Za-z_-]{20,}"
+              ),
+              re.compile(
+                  r"github_pat_[0-9A-Za-z_]{20,}"
+              ),
+              re.compile(
+                  r"ghp_[0-9A-Za-z]{20,}"
+              ),
+              re.compile(
+                  r"-----BEGIN [A-Z ]*PRIVATE KEY-----"
+              ),
+          ]
+
+          for root_name in [
+              "data",
+              "src",
+              "config",
+              "public",
+          ]:
+              root = Path(root_name)
+
+              if not root.exists():
+                  continue
+
+              for path in root.rglob("*"):
+                  if not path.is_file():
+                      continue
+
+                  try:
+                      text = path.read_text(
+                          encoding="utf-8"
+                      )
+                  except UnicodeDecodeError:
+                      continue
+
+                  if secret and secret in text:
+                      forbidden_files.append(
+                          str(path)
+                      )
+
+                  if any(
+                      pattern.search(text)
+                      for pattern in patterns
+                  ):
+                      forbidden_files.append(
+                          str(path)
+                      )
+
+          if forbidden_files:
+              raise SystemExit(
+                  "Wykryto sekret w plikach: "
+                  + ", ".join(
+                      sorted(set(forbidden_files))
+                  )
+              )
+
+          print("BEZPIECZEŃSTWO: OK")
+          print("Sekrety w plikach: 0")
+          PY
+
+      - name: Zapisanie naprawionych wyników
+        run: |
+          git config user.name "Indeks Żywności Bot"
+          git config user.email \
+            "actions@users.noreply.github.com"
+
+          git add \
+            data/catalog/source-selection-30.csv \
+            data/results/source-selection-30.csv \
+            data/results/source-candidates-30.csv \
+            data/results/source-exceptions-30.csv \
+            data/results/source-selection-30.json \
+            src/source_selector_v22.py
+
+          if git diff --cached --quiet; then
+            echo "Brak zmian do zapisania."
+          else
+            git commit \
+              -m "Etap 31: naprawa CSV i dobór źródeł"
+
+            git push origin HEAD:main
+          fi
+
+      - name: Podsumowanie
+        run: |
+          echo "=========================================="
+          echo "ETAP 31 ZAKOŃCZONY"
+          echo "PRZYCZYNA BŁĘDU: NAPRAWIONA"
+          echo "CSV: POPRAWNY"
+          echo "PRODUKTY: 30/30"
+          echo "SELEKTOR ŹRÓDEŁ: WYKONANY"
+          echo "KANDYDACI: ZAPISANI"
+          echo "WYJĄTKI: ZAPISANE"
+          echo "BEZPIECZEŃSTWO: OK"
+          echo "WYNIKI: ZAPISANE W REPOZYTORIUM"
+          echo "=========================================="
