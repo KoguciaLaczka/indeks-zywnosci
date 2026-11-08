@@ -1,0 +1,997 @@
+name: "70 - Publikacja portalu"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/70-publish-pages.yml"
+      - "public/**"
+      - "data/results/ranking-v23-30.csv"
+      - "data/results/portion-ranking-v24.csv"
+      - "data/results/economy-ranking-v25.csv"
+      - "data/results/economy-all-v25.csv"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: "Budowa portalu"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: "Pobranie repozytorium"
+        uses: actions/checkout@v5
+
+      - name: "Kontrola wymaganych plików"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "data/results/ranking-v23-30.csv"
+            "data/results/portion-ranking-v24.csv"
+            "data/results/economy-ranking-v25.csv"
+            "data/results/economy-all-v25.csv"
+            "public/index.html"
+            "public/portion.html"
+            "public/economy.html"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "BŁĄD: Brakuje wymaganego pliku: $file"
+              exit 1
+            fi
+
+            if [ ! -s "$file" ]; then
+              echo "BŁĄD: Plik jest pusty: $file"
+              exit 1
+            fi
+          done
+
+          echo "Wszystkie dane wejściowe są dostępne."
+
+      - name: "Zachowanie pełnego rankingu składu"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "public/density.html" ]; then
+            cp public/index.html public/density.html
+            echo "Pełny ranking zapisano jako public/density.html"
+          else
+            echo "public/density.html już istnieje."
+          fi
+
+      - name: "Budowa strony głównej"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 - <<'PYTHON'
+          from __future__ import annotations
+
+          import csv
+          import html
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from typing import Any
+
+
+          ROOT = Path(".")
+          PUBLIC = ROOT / "public"
+
+          DENSITY_CSV = ROOT / "data/results/ranking-v23-30.csv"
+          PORTION_CSV = ROOT / "data/results/portion-ranking-v24.csv"
+          ECONOMY_CSV = ROOT / "data/results/economy-ranking-v25.csv"
+          ECONOMY_ALL_CSV = ROOT / "data/results/economy-all-v25.csv"
+
+          OUTPUT = PUBLIC / "index.html"
+          MANIFEST = PUBLIC / "data/portal-manifest.json"
+
+          VERSION = "2.6.0-public-portal"
+
+
+          def read_csv(path: Path) -> list[dict[str, str]]:
+              with path.open(
+                  "r",
+                  encoding="utf-8-sig",
+                  newline="",
+              ) as handle:
+                  return [
+                      {
+                          str(key).lstrip("\ufeff"): (
+                              "" if value is None else str(value).strip()
+                          )
+                          for key, value in row.items()
+                      }
+                      for row in csv.DictReader(handle)
+                  ]
+
+
+          def number(value: Any, default: float = 0.0) -> float:
+              try:
+                  return float(str(value).replace(",", "."))
+              except (TypeError, ValueError):
+                  return default
+
+
+          def escaped(value: Any) -> str:
+              return html.escape(str(value or ""))
+
+
+          def format_number(value: Any, decimals: int = 2) -> str:
+              return f"{number(value):.{decimals}f}".replace(".", ",")
+
+
+          def density_rows(
+              rows: list[dict[str, str]],
+              limit: int = 10,
+          ) -> str:
+              output = []
+
+              for row in rows[:limit]:
+                  output.append(
+                      "<tr>"
+                      f"<td>{escaped(row.get('place'))}</td>"
+                      f"<td>{escaped(row.get('name_pl'))}</td>"
+                      f"<td>{escaped(row.get('category'))}</td>"
+                      f"<td>{format_number(row.get('score_cautious'))}</td>"
+                      f"<td>{format_number(row.get('completeness_percent'), 1)}%</td>"
+                      f"<td>"
+                      f"<a href=\"{escaped(row.get('fdc_url'))}\" "
+                      f"target=\"_blank\" rel=\"noopener\">USDA</a>"
+                      f"</td>"
+                      "</tr>"
+                  )
+
+              return "\n".join(output)
+
+
+          def portion_rows(
+              rows: list[dict[str, str]],
+              limit: int = 10,
+          ) -> str:
+              output = []
+
+              for row in rows[:limit]:
+                  flag = row.get("flag_level", "")
+
+                  output.append(
+                      "<tr>"
+                      f"<td>{escaped(row.get('portion_place'))}</td>"
+                      f"<td>{escaped(row.get('name_pl'))}</td>"
+                      f"<td>{format_number(row.get('portion_g'), 0)} g</td>"
+                      f"<td>{format_number(row.get('portion_score_cautious'))}</td>"
+                      f"<td>{escaped(flag)}</td>"
+                      "</tr>"
+                  )
+
+              return "\n".join(output)
+
+
+          def economy_rows(
+              rows: list[dict[str, str]],
+          ) -> str:
+              if not rows:
+                  return (
+                      "<tr>"
+                      "<td colspan=\"7\">"
+                      "Brak produktów z aktualną, zatwierdzoną ceną."
+                      "</td>"
+                      "</tr>"
+                  )
+
+              output = []
+
+              for row in rows[:10]:
+                  source_url = row.get("price_source_url", "")
+
+                  if source_url:
+                      source = (
+                          f"<a href=\"{escaped(source_url)}\" "
+                          f"target=\"_blank\" rel=\"noopener\">źródło</a>"
+                      )
+                  else:
+                      source = escaped(row.get("price_source_label"))
+
+                  output.append(
+                      "<tr>"
+                      f"<td>{escaped(row.get('economic_place'))}</td>"
+                      f"<td>{escaped(row.get('name_pl'))}</td>"
+                      f"<td>{format_number(row.get('price_pln_per_kg'))} zł/kg</td>"
+                      f"<td>{format_number(row.get('cost_portion_pln'))} zł</td>"
+                      f"<td>{format_number(row.get('portion_points_per_pln'))}</td>"
+                      f"<td>{escaped(row.get('price_date'))}</td>"
+                      f"<td>{source}</td>"
+                      "</tr>"
+                  )
+
+              return "\n".join(output)
+
+
+          density = read_csv(DENSITY_CSV)
+          portion = read_csv(PORTION_CSV)
+          economy = read_csv(ECONOMY_CSV)
+          economy_all = read_csv(ECONOMY_ALL_CSV)
+
+          if len(density) != 30:
+              raise RuntimeError(
+                  f"Ranking gęstości ma {len(density)}/30 produktów."
+              )
+
+          if len(portion) != 30:
+              raise RuntimeError(
+                  f"Ranking porcji ma {len(portion)}/30 produktów."
+              )
+
+          if len(economy_all) != 30:
+              raise RuntimeError(
+                  f"Raport ekonomiczny ma {len(economy_all)}/30 produktów."
+              )
+
+          density_ids = {
+              row["product_id"]
+              for row in density
+          }
+          portion_ids = {
+              row["product_id"]
+              for row in portion
+          }
+          economy_all_ids = {
+              row["product_id"]
+              for row in economy_all
+          }
+
+          if density_ids != portion_ids:
+              raise RuntimeError(
+                  "Ranking gęstości i ranking porcji mają różne produkty."
+              )
+
+          if density_ids != economy_all_ids:
+              raise RuntimeError(
+                  "Ranking gęstości i raport ekonomiczny mają różne produkty."
+              )
+
+          qualified_economy = len(economy)
+          missing_prices = len(economy_all) - qualified_economy
+
+          generated_at = datetime.now(timezone.utc)
+          generated_text = generated_at.strftime("%Y-%m-%d %H:%M UTC")
+
+          density_version = density[0].get(
+              "methodology_version",
+              "brak",
+          )
+          portion_version = portion[0].get(
+              "methodology_version",
+              "brak",
+          )
+
+          if economy:
+              economy_version = economy[0].get(
+                  "methodology_version",
+                  "brak",
+              )
+          else:
+              economy_version = "2.5.0-economy-pilot"
+
+          page = f"""<!doctype html>
+          <html lang="pl">
+          <head>
+            <meta charset="utf-8">
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            >
+            <meta
+              name="description"
+              content="Transparentny indeks wartości odżywczej żywności Kogucia Łączka."
+            >
+            <title>Indeks żywności — Kogucia Łączka</title>
+
+            <style>
+              :root {{
+                color-scheme: light;
+                --green-dark: #173c27;
+                --green: #2f6b42;
+                --green-light: #e5f0e5;
+                --cream: #f5f2e8;
+                --white: #ffffff;
+                --text: #20251f;
+                --muted: #687068;
+                --border: #d6ded4;
+                --warning: #fff3cf;
+                --warning-border: #c18b00;
+                --shadow: 0 6px 24px rgba(20, 50, 30, 0.08);
+              }}
+
+              * {{
+                box-sizing: border-box;
+              }}
+
+              html {{
+                scroll-behavior: smooth;
+              }}
+
+              body {{
+                margin: 0;
+                font-family:
+                  system-ui,
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  "Segoe UI",
+                  sans-serif;
+                color: var(--text);
+                background: var(--cream);
+                line-height: 1.55;
+              }}
+
+              a {{
+                color: var(--green);
+              }}
+
+              .hero {{
+                padding: 64px 20px;
+                color: var(--white);
+                background:
+                  linear-gradient(
+                    125deg,
+                    var(--green-dark),
+                    var(--green)
+                  );
+              }}
+
+              .hero-inner,
+              .container {{
+                width: min(1450px, calc(100% - 32px));
+                margin: 0 auto;
+              }}
+
+              .hero h1 {{
+                max-width: 900px;
+                margin: 0 0 12px;
+                font-size: clamp(2rem, 5vw, 4rem);
+                line-height: 1.05;
+              }}
+
+              .hero p {{
+                max-width: 850px;
+                margin: 0;
+                font-size: 1.12rem;
+                opacity: 0.94;
+              }}
+
+              nav {{
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                padding: 12px 20px;
+                background: rgba(255, 255, 255, 0.96);
+                border-bottom: 1px solid var(--border);
+                backdrop-filter: blur(10px);
+              }}
+
+              nav .container {{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px;
+              }}
+
+              nav a {{
+                font-weight: 700;
+                text-decoration: none;
+              }}
+
+              main {{
+                padding: 28px 0 60px;
+              }}
+
+              .grid {{
+                display: grid;
+                grid-template-columns:
+                  repeat(auto-fit, minmax(220px, 1fr));
+                gap: 18px;
+                margin: 22px 0;
+              }}
+
+              .card,
+              .section {{
+                background: var(--white);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                box-shadow: var(--shadow);
+              }}
+
+              .card {{
+                padding: 22px;
+              }}
+
+              .card .value {{
+                display: block;
+                margin-bottom: 4px;
+                color: var(--green-dark);
+                font-size: 2rem;
+                font-weight: 800;
+              }}
+
+              .card .label {{
+                color: var(--muted);
+              }}
+
+              .section {{
+                margin: 24px 0;
+                padding: 24px;
+                overflow-x: auto;
+              }}
+
+              .section h2 {{
+                margin-top: 0;
+                color: var(--green-dark);
+              }}
+
+              .warning {{
+                margin: 22px 0;
+                padding: 18px;
+                background: var(--warning);
+                border-left: 6px solid var(--warning-border);
+                border-radius: 10px;
+              }}
+
+              .button-row {{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 18px 0 0;
+              }}
+
+              .button {{
+                display: inline-block;
+                padding: 10px 15px;
+                color: var(--white);
+                background: var(--green);
+                border-radius: 9px;
+                font-weight: 700;
+                text-decoration: none;
+              }}
+
+              .button.secondary {{
+                color: var(--green-dark);
+                background: var(--green-light);
+              }}
+
+              table {{
+                width: 100%;
+                min-width: 760px;
+                border-collapse: collapse;
+              }}
+
+              th,
+              td {{
+                padding: 10px;
+                text-align: left;
+                vertical-align: top;
+                border-bottom: 1px solid var(--border);
+              }}
+
+              th {{
+                color: var(--green-dark);
+                background: var(--green-light);
+              }}
+
+              tbody tr:hover {{
+                background: #f8faf7;
+              }}
+
+              .tag {{
+                display: inline-block;
+                margin: 2px;
+                padding: 4px 8px;
+                background: var(--green-light);
+                border-radius: 999px;
+                font-size: 0.85rem;
+              }}
+
+              footer {{
+                padding: 28px 20px;
+                color: #dfe9df;
+                background: var(--green-dark);
+              }}
+
+              footer a {{
+                color: white;
+              }}
+
+              @media (max-width: 700px) {{
+                .hero {{
+                  padding: 42px 16px;
+                }}
+
+                .section {{
+                  padding: 16px;
+                }}
+
+                nav {{
+                  position: static;
+                }}
+              }}
+            </style>
+          </head>
+
+          <body>
+            <header class="hero">
+              <div class="hero-inner">
+                <h1>Indeks żywności Kogucia Łączka</h1>
+                <p>
+                  Otwarty i sprawdzalny ranking żywności:
+                  gęstość odżywcza, wartość praktycznej porcji
+                  oraz wartość odżywcza za jedną złotówkę.
+                </p>
+              </div>
+            </header>
+
+            <nav>
+              <div class="container">
+                <a href="#podsumowanie">Podsumowanie</a>
+                <a href="#gestosc">Gęstość odżywcza</a>
+                <a href="#porcje">Praktyczna porcja</a>
+                <a href="#ekonomia">Wartość za 1 zł</a>
+                <a href="#metodologia">Metodologia</a>
+              </div>
+            </nav>
+
+            <main class="container">
+              <section id="podsumowanie">
+                <div class="grid">
+                  <article class="card">
+                    <span class="value">{len(density)}</span>
+                    <span class="label">przeanalizowanych produktów</span>
+                  </article>
+
+                  <article class="card">
+                    <span class="value">27+</span>
+                    <span class="label">
+                      składników i grup odżywczych
+                    </span>
+                  </article>
+
+                  <article class="card">
+                    <span class="value">{qualified_economy}</span>
+                    <span class="label">
+                      produktów z aktualną ceną
+                    </span>
+                  </article>
+
+                  <article class="card">
+                    <span class="value">{missing_prices}</span>
+                    <span class="label">
+                      produktów bez ceny — bez fałszywych zer
+                    </span>
+                  </article>
+                </div>
+
+                <div class="warning">
+                  <strong>Projekt pilotażowy.</strong>
+                  Wyniki służą do porównywania produktów i metodologii.
+                  Nie są indywidualnym zaleceniem medycznym.
+                  Brak danych nie jest zerem, a wysoka punktacja nie oznacza,
+                  że produkt powinien być spożywany codziennie.
+                </div>
+              </section>
+
+              <section id="gestosc" class="section">
+                <h2>🥬 Gęstość składu odżywczego</h2>
+                <p>
+                  Wynik łączy 60% oceny na 100 g i 40% oceny na
+                  100 kcal. Każdy składnik ma limit punktów,
+                  a niepełne profile są jawnie oznaczane.
+                </p>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Miejsce</th>
+                      <th>Produkt</th>
+                      <th>Kategoria</th>
+                      <th>Wynik</th>
+                      <th>Kompletność</th>
+                      <th>Źródło</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {density_rows(density)}
+                  </tbody>
+                </table>
+
+                <div class="button-row">
+                  <a class="button" href="density.html">
+                    Pełny ranking składu
+                  </a>
+                  <a
+                    class="button secondary"
+                    href="../data/results/ranking-v23-30.csv"
+                  >
+                    Dane CSV
+                  </a>
+                </div>
+              </section>
+
+              <section id="porcje" class="section">
+                <h2>🍽️ Wartość praktycznej porcji</h2>
+                <p>
+                  Ten widok uwzględnia różne wielkości porcji.
+                  Flagi fitynianów, szczawianów, lektyn, sodu
+                  i nadmiaru wybranych mikroelementów są prezentowane
+                  jawnie, bez udawania precyzyjnych kar za wchłanianie.
+                </p>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Miejsce</th>
+                      <th>Produkt</th>
+                      <th>Porcja</th>
+                      <th>Wynik porcji</th>
+                      <th>Flaga</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {portion_rows(portion)}
+                  </tbody>
+                </table>
+
+                <div class="button-row">
+                  <a class="button" href="portion.html">
+                    Pełny ranking porcji
+                  </a>
+                  <a
+                    class="button secondary"
+                    href="../data/results/portion-ranking-v24.csv"
+                  >
+                    Dane CSV
+                  </a>
+                </div>
+              </section>
+
+              <section id="ekonomia" class="section">
+                <h2>💰 Wartość odżywcza za 1 zł</h2>
+                <p>
+                  Cena użytkownika ma pierwszeństwo przed ceną
+                  referencyjną. Cena przeterminowana lub brakująca
+                  wyłącza produkt z rankingu ekonomicznego,
+                  ale nie usuwa go z rankingu odżywczego.
+                </p>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Miejsce</th>
+                      <th>Produkt</th>
+                      <th>Cena</th>
+                      <th>Koszt porcji</th>
+                      <th>Punkty za 1 zł</th>
+                      <th>Data ceny</th>
+                      <th>Źródło</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {economy_rows(economy)}
+                  </tbody>
+                </table>
+
+                <div class="button-row">
+                  <a class="button" href="economy.html">
+                    Pełny ranking ekonomiczny
+                  </a>
+                  <a
+                    class="button secondary"
+                    href="../data/results/economy-all-v25.csv"
+                  >
+                    Raport wszystkich cen
+                  </a>
+                </div>
+              </section>
+
+              <section id="metodologia" class="section">
+                <h2>🔍 Transparentność metodologii</h2>
+
+                <p>
+                  Każdy wynik można prześledzić do rekordu USDA,
+                  wartości składników, normy referencyjnej,
+                  wyniku grupowego, założonej porcji i ceny.
+                </p>
+
+                <div>
+                  <span class="tag">
+                    Gęstość: {escaped(density_version)}
+                  </span>
+                  <span class="tag">
+                    Porcje: {escaped(portion_version)}
+                  </span>
+                  <span class="tag">
+                    Ekonomia: {escaped(economy_version)}
+                  </span>
+                  <span class="tag">
+                    Portal: {VERSION}
+                  </span>
+                </div>
+
+                <ul>
+                  <li>Brak danych nie jest traktowany jako zero.</li>
+                  <li>AAS nie jest przedstawiany jako DIAAS.</li>
+                  <li>
+                    Flagi biodostępności nie zmieniają wyniku liczbowego
+                    bez zweryfikowanych współczynników.
+                  </li>
+                  <li>
+                    Cena nie wpływa na bazową ocenę odżywczą.
+                  </li>
+                  <li>
+                    Wyniki pilotażowe nie zastępują indywidualnej
+                    oceny zdrowotnej.
+                  </li>
+                </ul>
+
+                <p>
+                  Repozytorium:
+                  <a
+                    href="https://github.com/KoguciaLaczka/indeks-zywnosci"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    KoguciaLaczka/indeks-zywnosci
+                  </a>
+                </p>
+              </section>
+            </main>
+
+            <footer>
+              <div class="container">
+                <strong>Kogucia Łączka</strong>
+                <p>
+                  Wygenerowano automatycznie: {generated_text}.
+                  Źródła odżywcze: USDA FoodData Central.
+                </p>
+              </div>
+            </footer>
+          </body>
+          </html>
+          """
+
+          OUTPUT.write_text(page, encoding="utf-8")
+
+          MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+          MANIFEST.write_text(
+              json.dumps(
+                  {
+                      "portal_version": VERSION,
+                      "generated_at": generated_at.isoformat(),
+                      "products": len(density),
+                      "portion_products": len(portion),
+                      "economy_qualified": qualified_economy,
+                      "economy_missing_price": missing_prices,
+                      "density_methodology": density_version,
+                      "portion_methodology": portion_version,
+                      "economy_methodology": economy_version,
+                  },
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              {
+                  "portal_version": VERSION,
+                  "products": len(density),
+                  "economy_qualified": qualified_economy,
+                  "status": "OK",
+              }
+          )
+          PYTHON
+
+      - name: "Przygotowanie plików GitHub Pages"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          touch public/.nojekyll
+
+          cat > public/404.html <<'HTML'
+          <!doctype html>
+          <html lang="pl">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Nie znaleziono strony</title>
+            <style>
+              body {
+                max-width: 700px;
+                margin: 60px auto;
+                padding: 20px;
+                font-family: system-ui, sans-serif;
+                color: #20251f;
+                background: #f5f2e8;
+              }
+              a {
+                color: #2f6b42;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Nie znaleziono strony</h1>
+            <p>
+              Ten adres nie istnieje albo został przeniesiony.
+            </p>
+            <p><a href="./">Wróć do Indeksu żywności</a></p>
+          </body>
+          </html>
+          HTML
+
+      - name: "Test portalu"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 - <<'PYTHON'
+          import csv
+          import json
+          import re
+          from pathlib import Path
+
+
+          public = Path("public")
+
+          required_files = [
+              public / "index.html",
+              public / "density.html",
+              public / "portion.html",
+              public / "economy.html",
+              public / "404.html",
+              public / ".nojekyll",
+              public / "data/portal-manifest.json",
+          ]
+
+          for path in required_files:
+              if not path.exists():
+                  raise RuntimeError(f"Brakuje pliku: {path}")
+
+              if path.name != ".nojekyll" and path.stat().st_size == 0:
+                  raise RuntimeError(f"Pusty plik: {path}")
+
+          index = (public / "index.html").read_text(encoding="utf-8")
+
+          required_texts = [
+              "Indeks żywności Kogucia Łączka",
+              "Gęstość składu odżywczego",
+              "Wartość praktycznej porcji",
+              "Wartość odżywcza za 1 zł",
+              "Brak danych nie jest traktowany jako zero",
+              "2.6.0-public-portal",
+          ]
+
+          for text in required_texts:
+              if text not in index:
+                  raise RuntimeError(
+                      f"Strona główna nie zawiera tekstu: {text}"
+                  )
+
+          manifest = json.loads(
+              (public / "data/portal-manifest.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          if manifest["products"] != 30:
+              raise RuntimeError("Manifest nie zawiera 30 produktów.")
+
+          if manifest["portion_products"] != 30:
+              raise RuntimeError(
+                  "Manifest nie zawiera 30 produktów porcji."
+              )
+
+          local_links = re.findall(
+              r'href="([^"]+)"',
+              index,
+          )
+
+          for link in local_links:
+              if (
+                  link.startswith("http://")
+                  or link.startswith("https://")
+                  or link.startswith("#")
+                  or link.startswith("mailto:")
+              ):
+                  continue
+
+              target_text = link.split("#", 1)[0].split("?", 1)[0]
+
+              if not target_text:
+                  continue
+
+              if target_text.startswith("../data/results/"):
+                  source_path = Path(target_text[3:])
+
+                  if not source_path.exists():
+                      raise RuntimeError(
+                          f"Nie istnieje plik danych: {source_path}"
+                      )
+
+                  continue
+
+              target = public / target_text
+
+              if not target.exists():
+                  raise RuntimeError(
+                      f"Nie istnieje lokalny odnośnik: {link}"
+                  )
+
+          secret_patterns = [
+              re.compile(r"AIza[0-9A-Za-z_-]{30,}"),
+              re.compile(r"github_pat_[0-9A-Za-z_]{20,}"),
+              re.compile(r"ghp_[0-9A-Za-z]{20,}"),
+              re.compile(
+                  r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"
+              ),
+          ]
+
+          for path in public.rglob("*"):
+              if not path.is_file():
+                  continue
+
+              text = path.read_text(
+                  encoding="utf-8",
+                  errors="ignore",
+              )
+
+              for pattern in secret_patterns:
+                  if pattern.search(text):
+                      raise RuntimeError(
+                          f"Potencjalny sekret w pliku: {path}"
+                      )
+
+          print(
+              {
+                  "products": manifest["products"],
+                  "economy_qualified": manifest["economy_qualified"],
+                  "local_links": len(local_links),
+                  "secrets": 0,
+                  "status": "OK",
+              }
+          )
+          PYTHON
+
+      - name: "Konfiguracja GitHub Pages"
+        uses: actions/configure-pages@v5
+
+      - name: "Utworzenie artefaktu strony"
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: "./public"
+
+  deploy:
+    name: "Wdrożenie publicznej strony"
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: "Publikacja GitHub Pages"
+        id: deployment
+        uses: actions/deploy-pages@v4
